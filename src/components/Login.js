@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 import { Heading, Box, Stack, Link, Input, Button, Text } from '@chakra-ui/core';
 
+const dividerContainer = {
+	display: 'flex',
+	justifyItems: 'space-between',
+	alignItems: 'center',
+	marginTop: '0.5rem',
+};
+
+const dividerStyles = {
+	height: '1px',
+	backgroundColor: '#CBD5E0',
+	width: '100%',
+};
 const Login = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
@@ -48,6 +60,13 @@ const Login = () => {
 				>
 					Ingresar
 				</Button>
+				<div style={dividerContainer}>
+					<div style={{ ...dividerStyles, marginRight: '1rem' }}></div>
+					<Text fontWeight="500" color="gray.400">
+						O
+					</Text>
+					<div style={{ ...dividerStyles, marginLeft: '1rem' }}></div>
+				</div>
 			</Stack>
 			<Stack
 				d="flex"
