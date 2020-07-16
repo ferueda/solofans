@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 
 import * as ROUTES from '../../constants/routes';
 
-import LogoMain from '../LogoMain';
+import LogoMain from '../shared/LogoMain';
 
 const dividerContainer = {
 	display: 'flex',
@@ -76,6 +76,7 @@ const ForgotPassword = () => {
 					<Stack>
 						<Input
 							name="email"
+							type="email"
 							placeholder="Correo electrónico"
 							ref={register({
 								required: {
@@ -90,6 +91,7 @@ const ForgotPassword = () => {
 							mt="1rem"
 							borderColor="gray.300"
 						/>
+
 						{errors.email && (
 							<Text fontSize="sm" color="red.500">
 								{errors.email.message}

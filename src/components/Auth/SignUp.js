@@ -6,7 +6,7 @@ import { GrFacebookOption } from 'react-icons/gr';
 
 import * as ROUTES from '../../constants/routes';
 
-import LogoMain from '../LogoMain';
+import LogoMain from '../shared/LogoMain';
 
 const dividerContainer = {
 	display: 'flex',
@@ -72,7 +72,15 @@ const SignUp = () => {
 		watchUsername === '';
 
 	return (
-		<Box d="flex" alignItems="center" flexDirection="column" w="100%" h="100vh" py={10} px={{ base: 0, sm: '10px' }}>
+		<Box
+			d="flex"
+			alignItems="center"
+			flexDirection="column"
+			w="100%"
+			h="100vh"
+			py={{ base: 0, sm: 10 }}
+			px={{ base: 0, sm: '10px' }}
+		>
 			<Stack {...stackCommonProps}>
 				<LogoMain />
 
@@ -100,20 +108,34 @@ const SignUp = () => {
 						{/* TODO: VALIDATE IF EMAIL IS TAKEN AND DISPLAY ERROR AT THE BOTTOM IF IT IS */}
 						<Input
 							name="email"
+							type="email"
 							placeholder="Correo electrónico"
 							ref={register({ required: true })}
 							borderColor="gray.300"
 						/>
 
 						<Stack isInline>
-							<Input name="firstName" placeholder="Nombre" ref={register({ required: true })} borderColor="gray.300" />
+							<Input
+								name="firstName"
+								type="text"
+								placeholder="Nombre"
+								ref={register({ required: true })}
+								borderColor="gray.300"
+							/>
 
-							<Input name="lastName" placeholder="Apellido" ref={register({ required: true })} borderColor="gray.300" />
+							<Input
+								name="lastName"
+								type="text"
+								placeholder="Apellido"
+								ref={register({ required: true })}
+								borderColor="gray.300"
+							/>
 						</Stack>
 
 						{/* TODO: VALIDATE IF USERNAME IS TAKEN AND DISPLAY ERROR AT THE BOTTOM IF IT IS */}
 						<Input
 							name="username"
+							type="text"
 							placeholder="Nombre de usuario"
 							ref={register({ required: true })}
 							borderColor="gray.300"
@@ -137,6 +159,11 @@ const SignUp = () => {
 						>
 							Crear cuenta
 						</Button>
+
+						{/* TODO: ADD ERROR MESSAGE TAILORED FOR WHEN THE USER TRIES TO LOG IN WITH EMAIL AND HE REGISTERED WITH FACEBOOK OR VICEVERSA
+						EXAMPLE:
+						An account with an E-Mail address to this social account already exists. Try to login from this account instead and  social accounts on your personal account page.
+						*/}
 
 						{error && (
 							<Text textAlign="center" color="red.500">

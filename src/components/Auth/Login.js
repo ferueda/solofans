@@ -8,7 +8,7 @@ import { AuthContext } from '../../GlobalState/AuthContext';
 
 import * as ROUTES from '../../constants/routes';
 
-import LogoMain from '../LogoMain';
+import LogoMain from '../shared/LogoMain';
 
 const dividerContainer = {
 	display: 'flex',
@@ -72,6 +72,7 @@ const Login = () => {
 					<Stack>
 						<Input
 							name="email"
+							type="email"
 							placeholder="Correo electrónico"
 							ref={register({
 								required: {
