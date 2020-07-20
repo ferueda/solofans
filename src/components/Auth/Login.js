@@ -8,6 +8,8 @@ import { AuthContext } from '../../GlobalState/AuthContext';
 
 import * as ROUTES from '../../constants/routes';
 
+import useProtectedRoute from '../../hooks/useProtectedRoute';
+
 import LogoMain from '../shared/LogoMain';
 
 const dividerContainer = {
@@ -46,6 +48,8 @@ const stackCommonProps = {
 };
 
 const Login = () => {
+	useProtectedRoute();
+
 	const { register, handleSubmit, errors, watch } = useForm();
 
 	const [isLoading, setIsLoading] = useState(false);
