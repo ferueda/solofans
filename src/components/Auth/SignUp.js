@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Box, Stack, Link, Input, Button, Text } from '@chakra-ui/core';
 import { GrFacebookOption } from 'react-icons/gr';
 
 import * as ROUTES from '../../constants/routes';
 
+import { FirebaseContext } from '../../GlobalState/FirebaseContext';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
 
 import LogoMain from '../shared/LogoMain';
@@ -54,6 +55,9 @@ const SignUp = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 
+	const firebase = useContext(FirebaseContext);
+	const history = useHistory();
+
 	const watchEmail = watch('email');
 	const watchFirstName = watch('firstName');
 	const watchLastName = watch('lastName');
@@ -62,7 +66,21 @@ const SignUp = () => {
 
 	const onSubmit = data => {
 		setIsLoading(true);
-		console.log(data);
+		setError(null);
+
+		const { email, password } = data;
+
+		firebase
+			.doCreateUserWithEmailAndPassword(email, password)
+			.then(() => {
+				setIsLoading(false);
+				setError(null);
+				history.push(ROUTES.HOME);
+			})
+			.catch(error => {
+				setIsLoading(false);
+				setError(error);
+			});
 	};
 
 	const emailValidationRegex = /\S+@\S+\.\S+/;
