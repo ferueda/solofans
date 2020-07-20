@@ -1,20 +1,17 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { AuthContext } from '../../GlobalState/AuthContext';
 
-import * as ROUTES from '../../constants/routes';
+import { AuthContext } from '../GlobalState/AuthContext';
+import useProtectedRoute from '../hooks/useProtectedRoute';
 
-import Nav from '../shared/Nav';
-import LogoHeader from '../shared/LogoHeader';
-import Post from '../Post/Post';
+import * as ROUTES from '../constants/routes';
+
+import Nav from '../components/shared/Nav';
+import LogoHeader from '../components/shared/LogoHeader';
+import Post from '../components/Post/Post';
 
 const Home = () => {
-	const { user } = useContext(AuthContext);
-	const history = useHistory();
-
-	if (!user) {
-		history.push(ROUTES.LOGIN);
-	}
+	useProtectedRoute();
 
 	return (
 		<React.Fragment>
