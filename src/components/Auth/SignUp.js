@@ -6,6 +6,8 @@ import { GrFacebookOption } from 'react-icons/gr';
 
 import * as ROUTES from '../../constants/routes';
 
+import useProtectedRoute from '../../hooks/useProtectedRoute';
+
 import LogoMain from '../shared/LogoMain';
 
 const dividerContainer = {
@@ -45,6 +47,8 @@ const stackCommonProps = {
 };
 
 const SignUp = () => {
+	useProtectedRoute();
+
 	const { register, handleSubmit, errors, watch } = useForm();
 
 	const [isLoading, setIsLoading] = useState(false);
