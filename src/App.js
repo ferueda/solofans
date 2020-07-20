@@ -1,14 +1,15 @@
 import React from 'react';
-import { Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 import { CSSReset, ThemeProvider } from '@chakra-ui/core';
 
 import GlobalState from './GlobalState/GlobalState';
+
 import * as ROUTES from './constants/routes';
 
-import Home from './components/Home/Home';
-import Buscar from './components/Buscar/Buscar';
-import NewPost from './components/Post/NewPost';
-import Account from './components/Account/Account';
+import Home from './pages/Home';
+import Buscar from './pages/Buscar';
+import NewPost from './pages/NewPost';
+import Account from './pages/Account';
 
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
