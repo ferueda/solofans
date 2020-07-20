@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form';
 
 import * as ROUTES from '../../constants/routes';
 
+import useProtectedRoute from '../../hooks/useProtectedRoute';
+
 import LogoMain from '../shared/LogoMain';
 
 const dividerContainer = {
@@ -43,6 +45,8 @@ const stackCommonProps = {
 };
 
 const ForgotPassword = () => {
+	useProtectedRoute();
+
 	const { register, handleSubmit, errors, watch } = useForm();
 
 	const [isLoading, setIsLoading] = useState(false);
