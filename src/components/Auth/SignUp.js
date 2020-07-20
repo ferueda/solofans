@@ -10,6 +10,7 @@ import { FirebaseContext } from '../../GlobalState/FirebaseContext';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
 
 import LogoMain from '../shared/LogoMain';
+import FacebookLoginButton from './FacebookLoginButton';
 
 const dividerContainer = {
 	display: 'flex',
@@ -110,12 +111,7 @@ const SignUp = () => {
 					Regístrate para interactuar con tus fans e influencers favoritos!
 				</Text>
 
-				<Button aria-label="ingresar con facebook" color="#fff" bg="#3b5998" _hover={{ bg: '#1f4287' }}>
-					<span style={{ position: 'absolute', left: '0.5rem' }}>
-						<GrFacebookOption size={24} />
-					</span>
-					Ingresar con Facebook
-				</Button>
+				<FacebookLoginButton />
 
 				<div style={dividerContainer}>
 					<div style={{ ...dividerStyles, marginRight: '1rem' }}></div>
