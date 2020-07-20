@@ -1,16 +1,16 @@
 import React, { useState, useContext } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { Box, Stack, Link, Input, Button, Text } from '@chakra-ui/core';
-import { GrFacebookOption } from 'react-icons/gr';
 import { useForm } from 'react-hook-form';
-
-import { AuthContext } from '../../GlobalState/AuthContext';
 
 import * as ROUTES from '../../constants/routes';
 
+import { AuthContext } from '../../GlobalState/AuthContext';
+import { FirebaseContext } from '../../GlobalState/FirebaseContext';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
 
 import LogoMain from '../shared/LogoMain';
+import FacebookLoginButton from './FacebookLoginButton';
 
 const dividerContainer = {
 	display: 'flex',
@@ -52,6 +52,9 @@ const Login = () => {
 
 	const { register, handleSubmit, errors, watch } = useForm();
 
+	const firebase = useContext(FirebaseContext);
+	const history = useHistory();
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 
@@ -59,8 +62,22 @@ const Login = () => {
 	const watchPassword = watch('password');
 
 	const onSubmit = data => {
-		console.log(data);
+		const { email, password } = data;
+
 		setIsLoading(true);
+		setError(null);
+
+		firebase
+			.doSignInUserWithEmailAndPassword(email, password)
+			.then(() => {
+				setIsLoading(false);
+				setError(false);
+				history.push(ROUTES.HOME);
+			})
+			.catch(error => {
+				setIsLoading(false);
+				setError(error);
+			});
 	};
 
 	const emailValidationRegex = /\S+@\S+\.\S+/;
@@ -141,12 +158,7 @@ const Login = () => {
 					<div style={{ ...dividerStyles, marginLeft: '1rem' }}></div>
 				</div>
 
-				<Button aria-label="ingresar con facebook" color="#fff" bg="#3b5998" _hover={{ bg: '#1f4287' }} mt="1rem">
-					<span style={{ position: 'absolute', left: '0.5rem' }}>
-						<GrFacebookOption size={24} />
-					</span>
-					Ingresar con Facebook
-				</Button>
+				<FacebookLoginButton />
 
 				<Text textAlign="center" color="blue.500">
 					<Link as={RouterLink} to={ROUTES.FORGOT_PASSWORD}>
