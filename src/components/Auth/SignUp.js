@@ -2,9 +2,9 @@ import React, { useState, useContext } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Box, Stack, Link, Input, Button, Text } from '@chakra-ui/core';
-import { GrFacebookOption } from 'react-icons/gr';
 
 import * as ROUTES from '../../constants/routes';
+import { capitalizeWord } from '../../utils/helpers';
 
 import { FirebaseContext } from '../../GlobalState/FirebaseContext';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
@@ -48,16 +48,23 @@ const stackCommonProps = {
 	mb: '1rem',
 };
 
-const SignUp = () => {
-	useProtectedRoute();
+const errorMessages = {
+	'auth/email-already-in-use': 'Ya existe una cuenta creada con este correo electrónico.',
+	'auth/username-already-in-use': 'El nombre de usuario no se encuentra disponible. Por favor inténtalo con otro.',
+	'auth/account-exists-with-different-credential':
+		'Ya existe una cuenta registrada con este correo electrónico. Intenta ingresar con Facebook o con tu correo electrónico y en configuración podrás vincular ambas cuentas.',
+};
 
-	const { register, handleSubmit, errors, watch } = useForm();
+const SignUp = () => {
+	const { register, handleSubmit, watch } = useForm();
+
+	const firebase = useContext(FirebaseContext);
+	const history = useHistory();
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 
-	const firebase = useContext(FirebaseContext);
-	const history = useHistory();
+	useProtectedRoute(isLoading);
 
 	const watchEmail = watch('email');
 	const watchFirstName = watch('firstName');
@@ -65,23 +72,49 @@ const SignUp = () => {
 	const watchUsername = watch('username');
 	const watchPassword = watch('password');
 
-	const onSubmit = data => {
+	const onSubmit = async data => {
 		setIsLoading(true);
 		setError(null);
 
-		const { email, password } = data;
+		let { email, password, username, firstName, lastName } = data;
 
-		firebase
-			.doCreateUserWithEmailAndPassword(email, password)
-			.then(() => {
+		username = username.toLowerCase();
+		firstName = capitalizeWord(firstName);
+		lastName = capitalizeWord(lastName);
+
+		const userisTaken = await firebase.db.collection('usernames').doc(username).get();
+
+		if (userisTaken.exists) {
+			setIsLoading(false);
+			setError({ code: 'auth/username-already-in-use', message: errorMessages['auth/username-already-in-use'] });
+		} else {
+			try {
+				const { user } = await firebase.doCreateUserWithEmailAndPassword(email, password);
+
+				await Promise.all([
+					user.updateProfile({
+						displayName: username,
+					}),
+					firebase.db.collection('users').doc(user.uid).set({
+						email: user.email,
+						username,
+						firstName,
+						lastName,
+					}),
+					firebase.db.collection('usernames').doc(username).set({
+						uid: user.uid,
+					}),
+					firebase.doSendEmailVerification(),
+				]);
+
 				setIsLoading(false);
 				setError(null);
 				history.push(ROUTES.HOME);
-			})
-			.catch(error => {
+			} catch (error) {
 				setIsLoading(false);
-				setError(error);
-			});
+				setError({ ...error, message: errorMessages[error.code] });
+			}
+		}
 	};
 
 	const emailValidationRegex = /\S+@\S+\.\S+/;
@@ -89,10 +122,12 @@ const SignUp = () => {
 	const isInvalid =
 		!emailValidationRegex.test(watchEmail) ||
 		watchPassword === '' ||
-		watchPassword.length < 4 ||
+		watchPassword.length < 6 ||
 		watchFirstName === '' ||
 		watchLastName === '' ||
 		watchUsername === '';
+
+	console.log(error);
 
 	return (
 		<Box
@@ -111,7 +146,7 @@ const SignUp = () => {
 					Regístrate para interactuar con tus fans e influencers favoritos!
 				</Text>
 
-				<FacebookLoginButton />
+				<FacebookLoginButton isLoading={isLoading} setIsLoading={setIsLoading} setError={setError} />
 
 				<div style={dividerContainer}>
 					<div style={{ ...dividerStyles, marginRight: '1rem' }}></div>
@@ -184,7 +219,7 @@ const SignUp = () => {
 						*/}
 
 						{error && (
-							<Text textAlign="center" color="red.500">
+							<Text fontSize="sm" textAlign="center" color="red.500" d="inline">
 								{error.message}
 							</Text>
 						)}
