@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Stack, Link, Input, Button, Text } from '@chakra-ui/core';
 import { useForm } from 'react-hook-form';
 
 import * as ROUTES from '../../constants/routes';
+
+import { FirebaseContext } from '../../GlobalState/FirebaseContext';
 
 import useProtectedRoute from '../../hooks/useProtectedRoute';
 
@@ -44,24 +46,73 @@ const stackCommonProps = {
 	mb: '1rem',
 };
 
-const ForgotPassword = () => {
-	useProtectedRoute();
+const EmailSent = () => {
+	return (
+		<Box d="flex" alignItems="center" flexDirection="column" w="100%" h="100vh" py={10} px={{ base: 0, sm: '10px' }}>
+			<Stack {...stackCommonProps}>
+				<LogoMain />
 
+				<Text fontWeight="500" fontSize="md" textAlign="center" mt="0.5rem">
+					Link enviado!
+				</Text>
+
+				<Text fontSize="md" textAlign="center" color="gray.600">
+					Ahora ingresa tu correo electrónico y sigue las instrucciones para recuperar el acceso a tu cuenta.
+				</Text>
+			</Stack>
+
+			<Stack {...stackCommonProps}>
+				<Text textAlign="center">
+					<Link as={RouterLink} to={ROUTES.LOGIN} color="blue.500">
+						Volver a inicio de sesión
+					</Link>
+				</Text>
+			</Stack>
+		</Box>
+	);
+};
+
+const ForgotPassword = () => {
 	const { register, handleSubmit, errors, watch } = useForm();
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 
+	const [emailSent, setEmailSent] = useState(false);
+
+	const firebase = useContext(FirebaseContext);
+
+	useProtectedRoute(isLoading);
+
 	const watchEmail = watch('email');
 
 	const onSubmit = data => {
-		console.log(data);
 		setIsLoading(true);
+		setError(null);
+
+		const { email } = data;
+
+		firebase
+			.doPasswordReset(email)
+			.then(() => {
+				setIsLoading(false);
+				setError(null);
+				setEmailSent(true);
+			})
+			.catch(error => {
+				setIsLoading(false);
+				setEmailSent(false);
+				setError(error);
+			});
 	};
 
 	const emailValidationRegex = /\S+@\S+\.\S+/;
 
 	const isInvalid = !emailValidationRegex.test(watchEmail);
+
+	if (emailSent) {
+		return <EmailSent />;
+	}
 
 	return (
 		<Box d="flex" alignItems="center" flexDirection="column" w="100%" h="100vh" py={10} px={{ base: 0, sm: '10px' }}>
@@ -115,7 +166,9 @@ const ForgotPassword = () => {
 
 						{error && (
 							<Text fontSize="sm" textAlign="center" color="red.500" d="inline">
-								{error.message}
+								{error.code === 'auth/user-not-found'
+									? 'No existe una cuenta registrada con este correo electrónico'
+									: 'Ocurrió un error, favor intenta nuevamente'}
 							</Text>
 						)}
 					</Stack>
