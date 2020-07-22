@@ -1,34 +1,36 @@
 import { useEffect, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { FirebaseContext } from '../GlobalState/FirebaseContext';
+import { AuthContext } from '../GlobalState/AuthContext';
 
 import * as ROUTES from '../constants/routes';
 
-const useProtectedRoute = () => {
-	const firebase = useContext(FirebaseContext);
+const useProtectedRoute = (isHold = false) => {
+	const { user, isLoading, error } = useContext(AuthContext);
+
 	const history = useHistory();
 	const { pathname } = useLocation();
 
 	useEffect(() => {
 		let isCancel = false;
 
-		firebase.auth.onAuthStateChanged(returnedUser => {
-			if (!isCancel) {
-				if (returnedUser) {
-					if (pathname === ROUTES.LOGIN || pathname === ROUTES.SINGUP || pathname === ROUTES.FORGOT_PASSWORD) {
-						history.replace(ROUTES.HOME);
-					}
-				} else if (pathname !== ROUTES.LOGIN && pathname !== ROUTES.SINGUP && pathname !== ROUTES.FORGOT_PASSWORD) {
-					history.replace(ROUTES.LOGIN);
-				}
-			}
-		});
+		if (isLoading || error || isHold) return;
+
+		if (user && (pathname === ROUTES.LOGIN || pathname === ROUTES.SINGUP || pathname === ROUTES.FORGOT_PASSWORD)) {
+			!isCancel && history.replace(ROUTES.HOME);
+		} else if (
+			!user &&
+			pathname !== ROUTES.LOGIN &&
+			pathname !== ROUTES.SINGUP &&
+			pathname !== ROUTES.FORGOT_PASSWORD
+		) {
+			!isCancel && history.replace(ROUTES.LOGIN);
+		}
 
 		return () => {
 			isCancel = true;
 		};
-	}, [firebase, history, pathname]);
+	}, [user, isLoading, error, history, pathname, isHold]);
 
 	return;
 };
