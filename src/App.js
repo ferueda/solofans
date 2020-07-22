@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { Route, Redirect, Switch, useLocation } from 'react-router-dom';
 import { CSSReset, ThemeProvider } from '@chakra-ui/core';
 
 import GlobalState from './GlobalState/GlobalState';
@@ -35,7 +35,7 @@ const App = () => {
 					<Route path={ROUTES.FORGOT_PASSWORD} component={ForgotPassword} />
 				</Switch>
 
-				{background && <Route path={ROUTES.ACCOUNT} component={Account} />}
+				{background ? <Route path={ROUTES.ACCOUNT} component={Account} /> : <Redirect to={ROUTES.HOME} />}
 			</ThemeProvider>
 		</GlobalState>
 	);
