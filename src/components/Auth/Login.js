@@ -47,9 +47,15 @@ const stackCommonProps = {
 	mb: '1rem',
 };
 
-const Login = () => {
-	useProtectedRoute();
+const errorMessages = {
+	'auth/user-not-found':
+		'El correo electrónico ingresado no está registrado. Comprueba el correo y vuelve a intentarlo.',
+	'auth/wrong-password': 'El correo electrónico y la contraseña no coinciden.',
+	'auth/account-exists-with-different-credential':
+		'Ya existe una cuenta registrada con este correo electrónico. Intenta ingresar con Facebook o con tu correo electrónico y en configuración podrás vincular ambas cuentas.',
+};
 
+const Login = () => {
 	const { register, handleSubmit, errors, watch } = useForm();
 
 	const firebase = useContext(FirebaseContext);
@@ -57,6 +63,8 @@ const Login = () => {
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
+
+	useProtectedRoute(isLoading);
 
 	const watchEmail = watch('email');
 	const watchPassword = watch('password');
@@ -76,13 +84,15 @@ const Login = () => {
 			})
 			.catch(error => {
 				setIsLoading(false);
-				setError(error);
+				setError({ ...error, message: errorMessages[error.code] });
 			});
 	};
 
 	const emailValidationRegex = /\S+@\S+\.\S+/;
 
-	const isInvalid = !emailValidationRegex.test(watchEmail) || watchPassword === '' || watchPassword.length < 4;
+	const isInvalid = !emailValidationRegex.test(watchEmail) || watchPassword === '' || watchPassword.length < 6;
+
+	console.log(error);
 
 	return (
 		<Box d="flex" alignItems="center" flexDirection="column" w="100%" h="100vh" py={10} px={{ base: 0, sm: '10px' }}>
@@ -158,7 +168,7 @@ const Login = () => {
 					<div style={{ ...dividerStyles, marginLeft: '1rem' }}></div>
 				</div>
 
-				<FacebookLoginButton />
+				<FacebookLoginButton isLoading={isLoading} setIsLoading={setIsLoading} setError={setError} />
 
 				<Text textAlign="center" color="blue.500">
 					<Link as={RouterLink} to={ROUTES.FORGOT_PASSWORD}>
