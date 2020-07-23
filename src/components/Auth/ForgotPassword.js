@@ -24,13 +24,6 @@ const dividerStyles = {
 	width: '100%',
 };
 
-const breakpoints = ['30em', '48em', '62em', '80em'];
-
-breakpoints.sm = breakpoints[0];
-breakpoints.md = breakpoints[1];
-breakpoints.lg = breakpoints[2];
-breakpoints.xl = breakpoints[3];
-
 const stackCommonProps = {
 	d: 'flex',
 	bg: { base: '#fff', sm: 'gray.50' },

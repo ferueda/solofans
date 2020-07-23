@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 
 import * as ROUTES from '../../constants/routes';
 
-import { AuthContext } from '../../GlobalState/AuthContext';
 import { FirebaseContext } from '../../GlobalState/FirebaseContext';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
 
@@ -24,13 +23,6 @@ const dividerStyles = {
 	backgroundColor: '#CBD5E0',
 	width: '100%',
 };
-
-const breakpoints = ['30em', '48em', '62em', '80em'];
-
-breakpoints.sm = breakpoints[0];
-breakpoints.md = breakpoints[1];
-breakpoints.lg = breakpoints[2];
-breakpoints.xl = breakpoints[3];
 
 const stackCommonProps = {
 	d: 'flex',
@@ -91,8 +83,6 @@ const Login = () => {
 	const emailValidationRegex = /\S+@\S+\.\S+/;
 
 	const isInvalid = !emailValidationRegex.test(watchEmail) || watchPassword === '' || watchPassword.length < 6;
-
-	console.log(error);
 
 	return (
 		<Box d="flex" alignItems="center" flexDirection="column" w="100%" h="100vh" py={10} px={{ base: 0, sm: '10px' }}>

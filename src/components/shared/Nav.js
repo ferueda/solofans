@@ -5,8 +5,6 @@ import { BsPlusSquare, BsHouse, BsSearch, BsChatDots, BsPeopleCircle } from 'rea
 
 import * as ROUTES from '../../constants/routes';
 
-import LogoMain from '../shared/LogoMain';
-
 const breakpoints = ['30em', '48em', '62em', '80em'];
 
 breakpoints.sm = breakpoints[0];
@@ -16,7 +14,7 @@ breakpoints.xl = breakpoints[3];
 
 const statusColor = {
 	active: '#3182CE',
-	notActive: '#718096',
+	notActive: '#000',
 };
 
 const Nav = () => {

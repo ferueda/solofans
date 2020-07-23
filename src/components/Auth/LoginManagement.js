@@ -43,7 +43,7 @@ const DefaultLoginToggle = ({
 
 	const watchPassword = watch('password');
 
-	const onSubmit = async data => onLink(data.password);
+	const onSubmit = data => onLink(data.password);
 
 	const isValid = watchPassword !== '' && watchPassword?.length >= 6;
 
@@ -86,7 +86,7 @@ const DefaultLoginToggle = ({
 									isLoading={isLoading}
 									isDisabled={!isValid}
 									type="submit"
-									aria-label="ingresar"
+									aria-label="vincular"
 									variantColor="green"
 									mt="1rem"
 								>
@@ -133,7 +133,7 @@ const LoginManagement = () => {
 		setIsLoading(true);
 
 		return firebase.auth
-			.fetchSignInMethodsForEmail(user.email)
+			.fetchSignInMethodsForEmail(user?.email)
 			.then(activeMethod => {
 				setActiveMethods(activeMethod);
 				setIsLoading(false);
@@ -209,7 +209,7 @@ const LoginManagement = () => {
 									onUnlink={onSocialUnlink}
 									isOpen={modalIsOpen}
 									toggleModal={() => setModalIsOpen(current => !current)}
-									email={user.email}
+									email={user?.email}
 									error={error}
 									isLoading={isLoading}
 								/>

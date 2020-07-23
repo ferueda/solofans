@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Redirect, Switch, useLocation } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 import { CSSReset, ThemeProvider } from '@chakra-ui/core';
 
 import GlobalState from './GlobalState/GlobalState';
@@ -14,6 +14,11 @@ import Account from './pages/Account';
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
 import ForgotPassword from './components/Auth/ForgotPassword';
+
+/* TODOS
+Validate and redesign confirm email template, confirm email hook and confirm email flow.
+Validate and redesign recover password template, and  flow.
+*/
 
 const App = () => {
 	const location = useLocation();
@@ -35,7 +40,7 @@ const App = () => {
 					<Route path={ROUTES.FORGOT_PASSWORD} component={ForgotPassword} />
 				</Switch>
 
-				{background ? <Route path={ROUTES.ACCOUNT} component={Account} /> : <Redirect to={ROUTES.HOME} />}
+				{background && <Route path={ROUTES.ACCOUNT} component={Account} />}
 			</ThemeProvider>
 		</GlobalState>
 	);

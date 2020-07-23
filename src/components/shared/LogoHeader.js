@@ -8,7 +8,7 @@ const LogoHeader = () => {
 			as="header"
 			d="flex"
 			width="100%"
-			bg="white"
+			bg="#fff"
 			borderBottom="1px"
 			borderColor="gray.300"
 			py="0.33rem"
