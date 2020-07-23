@@ -1,26 +1,39 @@
-import React from 'react';
-import { Box, Link, Avatar, Stack, Text } from '@chakra-ui/core';
+import React, { useContext } from 'react';
+import moment from 'moment';
+import 'moment/locale/es';
+import { Box } from '@chakra-ui/core';
 
-const PostHeader = () => {
-	return (
-		<Box mx="1rem">
-			<Stack isInline spacing="4">
-				<Avatar size="md" src="https://bit.ly/dan-abramov" />
-				<Stack>
-					<div>
-						<Text fontWeight="500"> Dan Abramov</Text>
-					</div>
-					<div>@danAbramov</div>
-				</Stack>
-			</Stack>
-		</Box>
-	);
-};
+import { AuthContext } from '../../GlobalState/AuthContext';
 
-const Post = () => {
+import PostHeader from './PostHeader';
+import PostBody from './PostBody';
+import PostFooter from './PostFooter';
+
+const Post = ({ caption, photoUrl, createdAt, tips, likesCount, username }) => {
+	const { user } = useContext(AuthContext);
+
+	const time = moment(createdAt).locale('es').fromNow();
+
+	if (!user) return null;
+
+	console.log(user);
+
 	return (
-		<Box my="1rem">
-			<PostHeader />
+		<Box
+			as="article"
+			d="flex"
+			flexDir="column"
+			alignItems="center"
+			maxW="600px"
+			my="1rem"
+			border={{ base: 'none', sm: '1px' }}
+			borderColor={{ base: '#fff', sm: 'gray.300' }}
+			borderRadius="3px"
+			bg={{ base: '#fafafa', sm: '#fff' }}
+		>
+			<PostHeader username={username} />
+			<PostBody src={photoUrl} user={user} caption={caption} />
+			<PostFooter meta={{ likesCount, tips, time }} />
 		</Box>
 	);
 };
