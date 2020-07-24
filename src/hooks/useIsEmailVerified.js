@@ -3,7 +3,7 @@ import { useEffect, useContext, useState } from 'react';
 import { AuthContext } from '../GlobalState/AuthContext';
 
 const useIsEmailVerified = (isHold = false) => {
-	const [isEmailVerified, setisEmailVerified] = useState(false);
+	const [isEmailVerified, setIsEmailVerified] = useState(false);
 	const { user, isLoading, error } = useContext(AuthContext);
 
 	useEffect(() => {
@@ -12,9 +12,9 @@ const useIsEmailVerified = (isHold = false) => {
 		if (isLoading || error || isHold) return;
 
 		if (user && !user.emailVerified && user.providerData.map(provider => provider.providerId).includes('password')) {
-			!isCancel && setisEmailVerified(false);
+			!isCancel && setIsEmailVerified(false);
 		} else {
-			!isCancel && setisEmailVerified(true);
+			!isCancel && setIsEmailVerified(true);
 		}
 
 		return () => {
