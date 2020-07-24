@@ -4,16 +4,17 @@ import { BsThreeDots } from 'react-icons/bs';
 
 import AccountAvatar from '../shared/AccountAvatar';
 
-const PostHeader = ({ username }) => {
+const PostHeader = ({ user }) => {
+	const { username, firstName, lastName, photoURL } = user;
 	return (
 		<Box as="header" mx="1rem" w="100%" maxW="600px" p="1rem">
 			<Box d="flex">
 				<Link href={`/${username}`}>
-					<AccountAvatar size="md" src="https://bit.ly/dan-abramov" />
+					<AccountAvatar size="md" src={photoURL} />
 				</Link>
 				<Box d="flex" w="100%" justifyContent="space-between" ml="1rem">
 					<Box d="flex" flexDir="column">
-						<Box fontWeight="500">Dan Abramov</Box>
+						<Box fontWeight="500">{`${firstName} ${lastName}`}</Box>
 						<Link href={`/${username}`}> @{username}</Link>
 					</Box>
 					<Box>
