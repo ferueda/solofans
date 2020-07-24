@@ -10,27 +10,23 @@ const useAuth = () => {
 	const firebase = useContext(FirebaseContext);
 
 	useEffect(() => {
-		let isCancel = false;
-
 		setIsLoading(true);
 		setError(null);
 
-		firebase.auth.onAuthStateChanged(returnedUser => {
-			if (!isCancel) {
-				if (returnedUser) {
-					setUser(returnedUser);
-					setIsLoading(false);
-					setError(null);
-				} else {
-					setUser(null);
-					setIsLoading(false);
-					setError(null);
-				}
+		const unsubscribe = firebase.auth.onAuthStateChanged(returnedUser => {
+			if (returnedUser) {
+				setUser(returnedUser);
+				setIsLoading(false);
+				setError(null);
+			} else {
+				setUser(null);
+				setIsLoading(false);
+				setError(null);
 			}
 		});
 
 		return () => {
-			isCancel = true;
+			unsubscribe();
 		};
 	}, [firebase]);
 
