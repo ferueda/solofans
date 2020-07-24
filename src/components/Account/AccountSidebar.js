@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Box, Button, Divider, Stack, Text, Link, PseudoBox } from '@chakra-ui/core';
+import { Box, Divider, Stack, Text, PseudoBox } from '@chakra-ui/core';
 import { useHistory } from 'react-router-dom';
 import { BsPerson, BsGear, BsBoxArrowInLeft, BsCreditCard } from 'react-icons/bs';
 
@@ -28,8 +28,6 @@ const AccountSidebar = () => {
 		});
 	};
 
-	console.log(user);
-
 	return (
 		<Box pos="fixed" top="0" right="0" bottom="0" bg="white" w="40%" minW="14rem" maxW="20rem" px={4} py={4}>
 			<Stack spacing={1} mb="1rem">
@@ -51,13 +49,13 @@ const AccountSidebar = () => {
 					</SidebarMenuItem>
 				</Box>
 				<Box>
-					<SidebarMenuItem to="#" label="Configuración">
-						<BsGear size={iconProps.size} color={iconProps.color} />
+					<SidebarMenuItem to="#" label="Datos Bancarios">
+						<BsCreditCard size={iconProps.size} color={iconProps.color} />
 					</SidebarMenuItem>
 				</Box>
 				<Box>
-					<SidebarMenuItem to="#" label="Datos Bancarios">
-						<BsCreditCard size={iconProps.size} color={iconProps.color} />
+					<SidebarMenuItem to="#" label="Configuración">
+						<BsGear size={iconProps.size} color={iconProps.color} />
 					</SidebarMenuItem>
 				</Box>
 			</Box>
