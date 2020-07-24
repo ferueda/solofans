@@ -37,6 +37,8 @@ const FacebookLoginButton = ({ isLoading = false, setIsLoading, setError }) => {
 						username,
 						firstName: additionalUserInfo.profile.first_name,
 						lastName: additionalUserInfo.profile.last_name,
+						photoURL: user.photoURL,
+						roles: 'user', //TODO: make it an array of roles and modify the Firestore rules to accept them.
 					}),
 					firebase.db.collection('usernames').doc(username).set({
 						uid: user.uid,
