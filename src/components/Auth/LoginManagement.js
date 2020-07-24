@@ -155,6 +155,13 @@ const LoginManagement = () => {
 
 		firebase.auth.currentUser
 			.linkWithPopup(firebase[provider])
+			.then(({ user, additionalUserInfo }) => {
+				if (!user.photoURL) {
+					user.updateProfile({
+						photoURL: additionalUserInfo.profile.picture.data.url,
+					});
+				}
+			})
 			.then(() => fetchSignInMethods())
 			.catch(error => {
 				setIsLoading(false);
