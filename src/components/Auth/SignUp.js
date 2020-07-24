@@ -93,6 +93,8 @@ const SignUp = () => {
 						username,
 						firstName,
 						lastName,
+						photoURL: user.photoURL,
+						roles: 'user', //TODO: make it an array of roles and modify the Firestore rules to accept them.
 					}),
 					firebase.db.collection('usernames').doc(username).set({
 						uid: user.uid,
