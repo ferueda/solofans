@@ -34,6 +34,7 @@ const Nav = () => {
 			borderTop="1px"
 			borderColor="gray.300"
 			bg="white"
+			zIndex={2}
 		>
 			<Box d="flex" alignItems="center" justifyContent="space-between" w="100%" h="100%">
 				<Link as={RouterLink} to={ROUTES.HOME}>
