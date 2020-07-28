@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Box, Text, PseudoBox, Button } from '@chakra-ui/core';
 import { BsX } from 'react-icons/bs';
 
-const Header = ({ title, buttonLabel, buttonIsActive, isLoading = false, onSubmit }) => {
+const Header = ({ title, buttonLabel, buttonIsActive, isLoading = false, handleSubmit }) => {
 	const history = useHistory();
 	return (
 		<Box d="flex" alignItems="center" width="100%">
@@ -20,7 +20,7 @@ const Header = ({ title, buttonLabel, buttonIsActive, isLoading = false, onSubmi
 				variantColor="blue"
 				type="submit"
 				ml="auto"
-				onClick={onSubmit}
+				onClick={handleSubmit}
 			>
 				{buttonLabel}
 			</Button>
