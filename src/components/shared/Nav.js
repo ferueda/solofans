@@ -57,9 +57,9 @@ const Nav = () => {
 						/>
 					</Link>
 
-					<Link _focus="none" as={RouterLink} to="#">
+					{/* <Link _focus="none" as={RouterLink} to="#">
 						<BsChatDots size={28} color={statusColor.notActive} />
-					</Link>
+					</Link> */}
 
 					<Box as="button" outline="none" onClick={() => setIsModal(state => !state)}>
 						<BsPeopleCircle size={28} color={isModal ? statusColor.active : statusColor.notActive} />
