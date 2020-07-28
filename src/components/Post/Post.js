@@ -7,7 +7,7 @@ import PostHeader from './PostHeader';
 import PostBody from './PostBody';
 import PostFooter from './PostFooter';
 
-const Post = ({ caption, photoURL, createdAt, tips, likesCount, user }) => {
+const Post = ({ caption, photoURL, createdAt, user }) => {
 	const time = moment(createdAt).locale('es').fromNow();
 
 	return (
@@ -24,8 +24,8 @@ const Post = ({ caption, photoURL, createdAt, tips, likesCount, user }) => {
 			bg={{ base: '#fafafa', sm: '#fff' }}
 		>
 			<PostHeader user={user} />
-			<PostBody src={photoURL} username={user.username} caption={caption} />
-			<PostFooter meta={{ likesCount, tips, time }} />
+			<PostBody src={photoURL} date={createdAt} username={user.username} caption={caption} />
+			{/* <PostFooter meta={{ time }} /> */}
 		</Box>
 	);
 };
