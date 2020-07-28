@@ -19,7 +19,7 @@ import {
 
 import { formatNumber } from '../../utils/helpers';
 
-const PriceModal = ({ isOpen, onClose, onSubmit }) => {
+const PriceModal = ({ isOpen, dispatch }) => {
 	const [price, setPrice] = useState('');
 	const [error, setError] = useState(null);
 
@@ -49,12 +49,14 @@ const PriceModal = ({ isOpen, onClose, onSubmit }) => {
 			return setError({ message: 'El precio debe ser menor o igual a $100.000' });
 		}
 
-		onSubmit(price);
+		dispatch({ type: 'UPDATE_PRICE', payload: { price } });
 		setPrice('');
 	};
 
+	const handleModalClose = () => dispatch({ type: 'CLOSE_MODAL' });
+
 	return (
-		<Modal isOpen={isOpen} onClose={onClose}>
+		<Modal isOpen={isOpen} onClose={handleModalClose}>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Precio del post</ModalHeader>
