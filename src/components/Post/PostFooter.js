@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Box, Stack, Text, PseudoBox } from '@chakra-ui/core';
 import { AiOutlineDollar } from 'react-icons/ai';
 import { BsDot } from 'react-icons/bs';
@@ -19,7 +18,7 @@ const PostFooter = ({ meta }) => {
 
 	return (
 		<Box d="flex" flexDir="column" alignItems="center" maxW="600px" width="100%" px="1rem" pb="0.5rem">
-			<Stack as="section" isInline spacing={2} width="100%" py="0.5rem">
+			{/* <Stack as="section" isInline spacing={2} width="100%" py="0.5rem">
 				<PseudoBox
 					as="button"
 					outline="none"
@@ -56,7 +55,7 @@ const PostFooter = ({ meta }) => {
 				<Text fontSize="0.85rem">
 					<strong>${formatNumber(meta.tips)}</strong> En propinas
 				</Text>
-			</Box>
+			</Box> */}
 			<Box width="100%" fontSize="0.8rem" color="gray.500" px="0.1rem">
 				{meta.time}
 			</Box>
