@@ -19,7 +19,7 @@ const HeaderSkeleton = () => {
 
 const BodySkeleton = () => {
 	return (
-		<Box d="flex" flexDir="column" maxW="600px" maxH="600px" width="100%">
+		<Box d="flex" flexDir="column" maxW="600px" width="100%">
 			<Skeleton h="1rem" mx="1rem" mb="1rem" width="6rem" />
 			<Box width="100%">
 				<Skeleton>
