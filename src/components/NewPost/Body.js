@@ -8,16 +8,20 @@ const iconProps = {
 	size: 28,
 };
 
-const captionShouldLength = 150;
+const Body = ({ caption, isLocked, dispatch, captionShouldLength }) => {
+	const handleCaptionChange = ({ target }) => {
+		dispatch({ type: 'UPDATE_CAPTION', payload: { caption: target.value } });
+	};
 
-const Body = ({ caption, isLocked, handleCaptionChange, handleLock }) => {
+	const handleLock = () => {
+		dispatch({ type: 'HANDLE_LOCK' });
+	};
+
 	return (
 		<Box d="flex" flexDir="column" width="100%" px="0.5rem">
-			{/* //TODO: PUT A LIMIT TO THE TEXT LENGTH */}
 			<Box>
 				<Textarea
 					size="xs"
-					h="3rem"
 					outline="none"
 					focusBorderColor="none"
 					border="none"
@@ -25,6 +29,7 @@ const Body = ({ caption, isLocked, handleCaptionChange, handleLock }) => {
 					value={caption}
 					onChange={handleCaptionChange}
 					zIndex={0}
+					pb={0}
 				/>
 				<span
 					style={{
