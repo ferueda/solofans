@@ -15,9 +15,29 @@ const useAuth = () => {
 
 		const unsubscribe = firebase.auth.onAuthStateChanged(returnedUser => {
 			if (returnedUser) {
-				setUser(returnedUser);
-				setIsLoading(false);
-				setError(null);
+				const authUser = returnedUser;
+
+				firebase.db
+					.collection('users')
+					.doc(authUser.uid)
+					.get()
+					.then(res => {
+						const dbUser = res.data();
+						const userObject = {
+							...authUser,
+							firstName: dbUser.firstName,
+							lastName: dbUser.lastName,
+							creditBalance: dbUser.creditBalance,
+							totalSales: dbUser.totalSales,
+							totalWithdrawals: dbUser.totalWithdrawals,
+							lastActive: dbUser.lastActive,
+							// purchasedPhotos: [...dbUser.purchasedPhotos],
+						};
+
+						setUser(userObject);
+						setIsLoading(false);
+						setError(null);
+					});
 			} else {
 				setUser(null);
 				setIsLoading(false);
