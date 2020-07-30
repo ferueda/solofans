@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Modal,
 	ModalOverlay,
@@ -19,9 +19,13 @@ import {
 
 import { formatNumber } from '../../utils/helpers';
 
-const PriceModal = ({ isOpen, dispatch }) => {
+const PriceModal = ({ isOpen, isLocked, dispatch }) => {
 	const [price, setPrice] = useState('');
 	const [error, setError] = useState(null);
+
+	useEffect(() => {
+		dispatch({ type: 'UPDATE_MODAL' });
+	}, [isLocked, dispatch]);
 
 	const handleInputChange = value => {
 		const reg = /[^0-9]+/g;
