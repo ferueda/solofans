@@ -99,6 +99,12 @@ const SignUp = () => {
 					firebase.db.collection('usernames').doc(username).set({
 						uid: user.uid,
 					}),
+					firebase.db.collection('followers').doc(user.uid).set({
+						totalFollowers: 0,
+						lastPost: null,
+						recentPosts: [],
+						followers: [],
+					}),
 					firebase.doSendEmailVerification(),
 				]);
 
