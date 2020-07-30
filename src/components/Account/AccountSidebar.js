@@ -29,13 +29,13 @@ const AccountSidebar = () => {
 	};
 
 	return (
-		<Box pos="fixed" top="0" right="0" bottom="0" bg="white" w="40%" minW="14rem" maxW="20rem" px={4} py={4}>
+		<Box pos="fixed" top="0" right="0" bottom="0" bg="white" w="40%" minW="14rem" maxW="20rem" px={4} py={4} zIndex={1}>
 			<Stack spacing={1} mb="1rem">
 				<Box>
 					<AccountAvatar src={user.photoURL} size="md" />
 				</Box>
 				<Text mt="0.5rem" fontWeight="500">
-					Felipe Rueda
+					{`${user.firstName} ${user.lastName}`}
 				</Text>
 				<Text color="gray.500">@{user.displayName}</Text>
 			</Stack>
