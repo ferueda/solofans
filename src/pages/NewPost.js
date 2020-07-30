@@ -1,13 +1,10 @@
-import React, { useEffect, useReducer, useContext } from 'react';
+import React, { useReducer, useContext, useRef } from 'react';
 import { Box, Divider, Text } from '@chakra-ui/core';
-import { useHistory } from 'react-router-dom';
 
-import { FirebaseContext } from '../GlobalState/FirebaseContext';
 import { AuthContext } from '../GlobalState/AuthContext';
 
 import useProtectedRoute from '../hooks/useProtectedRoute';
-
-import * as ROUTES from '../constants/routes';
+import useSubmitPost from '../hooks/useSubmitPost';
 
 import { newPostReducer } from '../GlobalState/reducers';
 
@@ -16,35 +13,29 @@ import Header from '../components/NewPost/Header';
 import Body from '../components/NewPost/Body';
 import Meta from '../components/NewPost/Meta';
 import PriceModal from '../components/NewPost/PriceModal';
+import ImagePreview from '../components/NewPost/ImagePreview';
 
 const captionShouldLength = 150;
 
 const initialState = {
 	caption: '',
 	images: [],
+	imagePreview: null,
 	isLocked: false,
 	price: 0,
 	isModal: false,
-	isLoading: false,
 	error: null,
 };
 
 const NewPost = () => {
-	const [{ caption, images, isLocked, price, isModal, isLoading, error }, dispatch] = useReducer(
-		newPostReducer,
-		initialState
-	);
-
-	const firebase = useContext(FirebaseContext);
+	useProtectedRoute();
 	const { user } = useContext(AuthContext);
 
-	const history = useHistory();
+	const { setPostObject, isLoading } = useSubmitPost();
 
-	useProtectedRoute();
+	const [{ caption, images, isLocked, price, isModal, error }, dispatch] = useReducer(newPostReducer, initialState);
 
-	useEffect(() => {
-		dispatch({ type: 'UPDATE_MODAL' });
-	}, [isLocked]);
+	const imageInputRef = useRef();
 
 	const handleSubmit = async () => {
 		if (caption.length > captionShouldLength) {
@@ -54,12 +45,10 @@ const NewPost = () => {
 			});
 		}
 
-		dispatch({ type: 'SUBMIT_POST_INIT' });
-
 		const postObject = {
 			caption,
 			createdAt: new Date().toISOString(),
-			photos: [...images],
+			photos: images.map(({ image }) => image),
 			locked: isLocked,
 			price: price > 0 ? Number(price.replace(/[^0-9]+/g, '')) : 0,
 			user: {
@@ -71,36 +60,29 @@ const NewPost = () => {
 			},
 		};
 
-		try {
-			const followersRef = firebase.db.collection('followers');
-			const followersDocRef = followersRef.doc(user.uid);
+		setPostObject(postObject);
+	};
 
-			const followerDoc = await followersDocRef.get();
-			const recentPosts = followerDoc.data().recentPosts;
+	const handleAddImage = ({ target }) => {
+		const image = target.files[0];
 
-			if (recentPosts.length >= 5) {
-				await followersDocRef.update({
-					recentPosts: firebase.app.firestore.FieldValue.arrayRemove(recentPosts[recentPosts.length - 1]),
-				});
-			}
+		if (image && images.some(img => img.image.name === image.name)) {
+			return dispatch({ type: 'FORMAT_ERROR', payload: { error: { message: 'La imagen ya fue seleccionada' } } });
+		}
 
-			const p1 = firebase.db.collection('posts').add(postObject);
+		if (image && images.length >= 6) {
+			return dispatch({ type: 'FORMAT_ERROR', payload: { error: { message: 'El máximo de fotos por post es de 6' } } });
+		}
 
-			const p2 = followersDocRef.update({
-				lastPost: postObject.createdAt,
-				recentPosts: firebase.app.firestore.FieldValue.arrayUnion(postObject),
-			});
-
-			await Promise.all([p1, p2]);
-
-			dispatch({ type: 'SUBMIT_POST_SUCCESS' });
-			history.push(ROUTES.HOME);
-		} catch (error) {
-			dispatch({ type: 'SUBMIT_POST_ERROR', payload: { error } });
+		if (image) {
+			dispatch({ type: 'ADD_IMAGE', payload: { image, preview: URL.createObjectURL(image) } });
+			target.value = '';
 		}
 	};
 
-	const isButtonActive = caption.length > 0 || images.length > 0;
+	const isButtonActive = images.length > 0;
+
+	console.log(images);
 
 	return (
 		<Box d="flex" flexDir="column" alignItems="center" alignContent="center" width="100%" p="1rem" mb="4rem">
@@ -120,13 +102,31 @@ const NewPost = () => {
 
 			<Divider borderColor="gray.200" width="100%" my="0.5rem" />
 
-			<Body caption={caption} isLocked={isLocked} dispatch={dispatch} captionShouldLength={captionShouldLength} />
+			<Body
+				caption={caption}
+				isLocked={isLocked}
+				dispatch={dispatch}
+				captionShouldLength={captionShouldLength}
+				imageInputRef={imageInputRef}
+			/>
 			<Divider borderColor="gray.200" width="100%" my="0.5rem" />
+
+			<input type="file" onChange={handleAddImage} ref={imageInputRef} style={{ display: 'none' }} />
 
 			<Meta isLocked={isLocked} price={price} />
 			<Divider borderColor="gray.200" width="100%" my="0.5rem" />
 
-			<PriceModal isOpen={isModal} dispatch={dispatch} />
+			{images.map(({ image, preview }) => (
+				<ImagePreview
+					key={image.name}
+					imageInputRef={imageInputRef}
+					image={image}
+					preview={preview}
+					dispatch={dispatch}
+				/>
+			))}
+
+			<PriceModal isOpen={isModal} isLocked={isLocked} dispatch={dispatch} />
 			<Nav />
 		</Box>
 	);
