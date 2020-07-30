@@ -8,7 +8,7 @@ const iconProps = {
 	size: 28,
 };
 
-const Body = ({ caption, isLocked, dispatch, captionShouldLength }) => {
+const Body = ({ caption, isLocked, dispatch, captionShouldLength, imageInputRef }) => {
 	const handleCaptionChange = ({ target }) => {
 		dispatch({ type: 'UPDATE_CAPTION', payload: { caption: target.value } });
 	};
@@ -16,6 +16,8 @@ const Body = ({ caption, isLocked, dispatch, captionShouldLength }) => {
 	const handleLock = () => {
 		dispatch({ type: 'HANDLE_LOCK' });
 	};
+
+	const handleAddImage = () => imageInputRef.current.click();
 
 	return (
 		<Box d="flex" flexDir="column" width="100%" px="0.5rem">
@@ -45,12 +47,7 @@ const Body = ({ caption, isLocked, dispatch, captionShouldLength }) => {
 				</span>
 			</Box>
 			<Stack isInline spacing={4} width="100%" px="1rem" my="0.5rem">
-				<PseudoBox
-					as="button"
-					outline="none"
-					onClick={() => console.log('clicked')}
-					_hover={{ color: iconProps.fillColor }}
-				>
+				<PseudoBox as="button" outline="none" onClick={handleAddImage} _hover={{ color: iconProps.fillColor }}>
 					<BsImages size={iconProps.size} />
 				</PseudoBox>
 				<PseudoBox as="button" outline="none" onClick={handleLock} _hover={{ color: iconProps.fillColor }} ml="auto">
