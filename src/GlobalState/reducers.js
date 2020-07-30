@@ -7,33 +7,6 @@ export const newPostReducer = (state, action) => {
 				price: 0,
 			};
 
-		case 'SUBMIT_POST_INIT':
-			return {
-				...state,
-				error: null,
-				isLoading: true,
-			};
-
-		case 'SUBMIT_POST_SUCCESS':
-			console.log('success');
-			return {
-				...state,
-				isLoading: false,
-				error: null,
-				caption: '',
-				price: 0,
-				images: [],
-				isLocked: false,
-				isModal: false,
-			};
-
-		case 'SUBMIT_POST_ERROR':
-			return {
-				...state,
-				isLoading: false,
-				error: action.payload.error,
-			};
-
 		case 'UPDATE_CAPTION':
 			return {
 				...state,
@@ -67,6 +40,20 @@ export const newPostReducer = (state, action) => {
 			return {
 				...state,
 				error: { message: action.payload.error.message },
+			};
+
+		case 'ADD_IMAGE':
+			return {
+				...state,
+				error: null,
+				images: state.images.concat(action.payload),
+			};
+
+		case 'REMOVE_IMAGE':
+			return {
+				...state,
+				error: null,
+				images: state.images.filter(imageObject => imageObject.image.name !== action.payload.image),
 			};
 
 		default:
