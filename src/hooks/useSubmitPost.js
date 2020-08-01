@@ -85,6 +85,7 @@ const useSubmitPost = () => {
 				history.push(ROUTES.HOME);
 			} catch (error) {
 				setError(axios.isCancel(error) ? null : error);
+				setIsLoading(false);
 			}
 		})();
 	}, [postObject]);
