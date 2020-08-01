@@ -9,6 +9,7 @@ import * as ROUTES from './constants/routes';
 import Home from './pages/Home';
 import Buscar from './pages/Buscar';
 import NewPost from './pages/NewPost';
+import Settings from './pages/Settings';
 
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
@@ -29,6 +30,7 @@ const App = () => {
 					<Route exact path={ROUTES.HOME} component={Home} />
 					<Route path={ROUTES.BUSCAR} component={Buscar} />
 					<Route path={ROUTES.NEW_POST} component={NewPost} />
+					<Route path={ROUTES.SETTINGS} component={Settings} />
 
 					<Route path={ROUTES.LOGIN} component={Login} />
 					<Route path={ROUTES.SINGUP} component={SignUp} />
