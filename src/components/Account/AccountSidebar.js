@@ -8,7 +8,6 @@ import { AuthContext } from '../../GlobalState/AuthContext';
 
 import * as ROUTES from '../../constants/routes';
 
-import LoginManagement from '../Auth/LoginManagement';
 import AccountAvatar from '../shared/AccountAvatar';
 import SidebarMenuItem from './SidebarMenuItem';
 
@@ -54,7 +53,7 @@ const AccountSidebar = () => {
 					</SidebarMenuItem>
 				</Box>
 				<Box>
-					<SidebarMenuItem to="#" label="Configuración">
+					<SidebarMenuItem to={ROUTES.SETTINGS} label="Configuración">
 						<BsGear size={iconProps.size} color={iconProps.color} />
 					</SidebarMenuItem>
 				</Box>

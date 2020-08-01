@@ -14,8 +14,6 @@ const Home = () => {
 
 	useProtectedRoute();
 
-	console.log(posts);
-
 	return (
 		<Box mb="4rem" d="flex" flexDir="column" alignItems="center" bg="#fafafa">
 			<Nav />

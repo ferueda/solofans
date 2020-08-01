@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Image, Text } from '@chakra-ui/core';
 
 const PostBody = ({ src, username, date, caption }) => {
+	console.log('only one');
 	return (
 		<Box d="flex" flexDir="column" alignItems="stretch" justifyItems="stretch" maxW="600px">
 			<Box d="flex" flexWrap="wrap" px="1rem" pb="1rem" width="100%">

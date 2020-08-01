@@ -15,6 +15,7 @@ const Account = () => {
 
 	return (
 		<React.Fragment>
+			<Nav />
 			<Box
 				pos="fixed"
 				top="0"
@@ -25,7 +26,6 @@ const Account = () => {
 				onClick={() => history.goBack()}
 			></Box>
 			<AccountSidebar />
-			<Nav />
 		</React.Fragment>
 	);
 };

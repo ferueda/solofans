@@ -8,7 +8,7 @@ const iconProps = {
 	size: 28,
 };
 
-const Body = ({ caption, isLocked, dispatch, captionShouldLength, imageInputRef }) => {
+const Body = ({ caption, isLocked, dispatch, captionShouldLength, imageInputRef, isLoading }) => {
 	const handleCaptionChange = ({ target }) => {
 		dispatch({ type: 'UPDATE_CAPTION', payload: { caption: target.value } });
 	};
@@ -23,6 +23,7 @@ const Body = ({ caption, isLocked, dispatch, captionShouldLength, imageInputRef 
 		<Box d="flex" flexDir="column" width="100%" px="0.5rem">
 			<Box>
 				<Textarea
+					isDisabled={isLoading}
 					size="xs"
 					outline="none"
 					focusBorderColor="none"
@@ -47,7 +48,13 @@ const Body = ({ caption, isLocked, dispatch, captionShouldLength, imageInputRef 
 				</span>
 			</Box>
 			<Stack isInline spacing={4} width="100%" px="1rem" my="0.5rem">
-				<PseudoBox as="button" outline="none" onClick={handleAddImage} _hover={{ color: iconProps.fillColor }}>
+				<PseudoBox
+					as="button"
+					isDisabled={isLoading}
+					outline="none"
+					onClick={handleAddImage}
+					_hover={{ color: iconProps.fillColor }}
+				>
 					<BsImages size={iconProps.size} />
 				</PseudoBox>
 				<PseudoBox as="button" outline="none" onClick={handleLock} _hover={{ color: iconProps.fillColor }} ml="auto">
