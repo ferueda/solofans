@@ -9,8 +9,8 @@ const ImagePreview = ({ image, preview, dispatch, imageInputRef }) => {
 	};
 
 	return (
-		<Box pos="relative">
-			<Image borderRadius="0.25rem" w="130px" h="130px" src={preview} alt="image preview" />
+		<Box pos="relative" d="inline-block">
+			<Image borderRadius="0.25rem" w="120px" h="120px" src={preview} alt="image preview" />
 			<PseudoBox
 				as="button"
 				outline="none"
