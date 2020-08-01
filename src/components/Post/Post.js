@@ -6,8 +6,9 @@ import { Box } from '@chakra-ui/core';
 import PostHeader from './PostHeader';
 import PostBody from './PostBody';
 import PostFooter from './PostFooter';
+import PostBodyMultiple from './PostBodyMultiple';
 
-const Post = ({ caption, photoURL, createdAt, user }) => {
+const Post = ({ caption, photos, createdAt, user }) => {
 	const time = moment(createdAt).locale('es').fromNow();
 
 	return (
@@ -24,7 +25,13 @@ const Post = ({ caption, photoURL, createdAt, user }) => {
 			bg={{ base: '#fafafa', sm: '#fff' }}
 		>
 			<PostHeader user={user} />
-			<PostBody src={photoURL} date={createdAt} username={user.username} caption={caption} />
+
+			{photos.length === 1 ? (
+				<PostBody src={photos[0]} date={createdAt} username={user.username} caption={caption} />
+			) : (
+				<PostBodyMultiple photos={photos} date={createdAt} username={user.username} caption={caption} />
+			)}
+
 			{/* <PostFooter meta={{ time }} /> */}
 		</Box>
 	);
