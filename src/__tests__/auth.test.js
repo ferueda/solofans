@@ -188,7 +188,89 @@ describe('Login', () => {
 	});
 });
 
-	// 	const fbLoginButton = screen.getByLabelText('ingresar con facebook');
+describe('SignUp', () => {
+	const emailText = 'email@email.com';
+	const firstNameText = 'testname';
+	const lastNameText = 'testlastname';
+	const usernameText = 'username';
+	const passText = 'password';
+
+	let inputArray = [];
+	const textArray = [emailText, firstNameText, lastNameText, usernameText, passText];
+
+	beforeEach(() => {
+		const authContext = {
+			user: {},
+			isLoading: false,
+			error: null,
+		};
+
+		render(
+			<MemoryRouter>
+				<AuthContext.Provider value={authContext}>
+					<ThemeProvider>
+						<CSSReset />
+						<SignUp />
+					</ThemeProvider>
+				</AuthContext.Provider>
+			</MemoryRouter>
+		);
+
+		const email = screen.getByLabelText(/email/i);
+		const firstName = screen.getByLabelText('nombre');
+		const lastName = screen.getByLabelText(/apellido/i);
+		const username = screen.getByLabelText(/nombre de usuario/i);
+		const password = screen.getByLabelText(/contraseña/i);
+
+		inputArray = [email, firstName, lastName, username, password];
+	});
+
+	useProtectedRoute.mockReturnValue({});
+
+	test('"Ingresa aquí" link renders with the right values', () => {
+		const link = screen.getByRole('link', { name: /ingresa aquí/i });
+		expect(link).toBeInTheDocument();
+	});
+
+	test('"Ingresa aquí" link points to the correct page', async () => {
+		const link = screen.getByRole('link', { name: /ingresa aquí/i });
+		expect(link).toHaveAttribute('href', ROUTES.LOGIN);
+	});
+
+	test('inputs render with the right values', async () => {
+		inputArray.forEach(input => expect(input).toBeInTheDocument());
+		inputArray.forEach(input => expect(input).toHaveValue(''));
+	});
+
+	test('inputs update when entering text', () => {
+		inputArray.forEach((input, index) => {
+			fireEvent.input(input, { target: { value: textArray[index] } });
+			expect(input).toHaveValue(textArray[index]);
+		});
+	});
+
+	test('"Crear cuenta" and "Ingresar con Facebook" buttons render', () => {
+		const loginButton = screen.getByLabelText(/crear cuenta/i);
+		const fbLoginButton = screen.getByLabelText(/ingresar con facebook/i);
+
+		expect(loginButton).toBeInTheDocument();
+		expect(fbLoginButton).toBeInTheDocument();
+	});
+
+	test('signup button is disabled when empty inputs and active when value in inputs', () => {
+		const button = screen.getByLabelText(/crear cuenta/i);
+
+		expect(button).toHaveAttribute('aria-disabled', 'true');
+		expect(button).toBeDisabled();
+
+		inputArray.forEach((input, index) => {
+			fireEvent.input(input, { target: { value: textArray[index] } });
+		});
+
+		expect(button).toHaveAttribute('aria-disabled', 'false');
+		expect(button).not.toBeDisabled();
+	});
+});
 
 	// 	fireEvent.click(fbLoginButton);
 
