@@ -119,6 +119,7 @@ const ForgotPassword = () => {
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Stack>
 						<Input
+							aria-label="email"
 							name="email"
 							type="email"
 							placeholder="Correo electrónico"
@@ -146,7 +147,7 @@ const ForgotPassword = () => {
 							isDisabled={isInvalid}
 							isLoading={isLoading}
 							type="submit"
-							aria-label="ingresar"
+							aria-label="recuperar cuenta"
 							variantColor="blue"
 							mt="1rem"
 						>
@@ -156,8 +157,8 @@ const ForgotPassword = () => {
 						{error && (
 							<Text fontSize="sm" textAlign="center" color="red.500" d="inline">
 								{error.code === 'auth/user-not-found'
-									? 'No existe una cuenta registrada con este correo electrónico'
-									: 'Ocurrió un error, favor intenta nuevamente'}
+									? 'No existe una cuenta registrada con este correo electrónico.'
+									: 'Ocurrió un error, favor intenta nuevamente.'}
 							</Text>
 						)}
 					</Stack>

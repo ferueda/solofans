@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Box, Stack, Link, Input, Button, Text } from '@chakra-ui/core';
+import { Box, Stack, Link, Input, Button, Text, FormControl } from '@chakra-ui/core';
 
 import * as ROUTES from '../../constants/routes';
 import { capitalizeWord } from '../../utils/helpers';
@@ -156,53 +156,67 @@ const SignUp = () => {
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Stack mt="1rem">
 						{/* TODO: VALIDATE IF EMAIL IS TAKEN AND DISPLAY ERROR AT THE BOTTOM IF IT IS */}
-						<Input
-							name="email"
-							type="email"
-							placeholder="Correo electrónico"
-							ref={register({ required: true })}
-							borderColor="gray.300"
-						/>
+
+						<FormControl>
+							<Input
+								aria-label="email"
+								name="email"
+								type="email"
+								placeholder="Correo electrónico"
+								ref={register({ required: true })}
+								borderColor="gray.300"
+							/>
+						</FormControl>
 
 						<Stack isInline>
-							<Input
-								name="firstName"
-								type="text"
-								placeholder="Nombre"
-								ref={register({ required: true })}
-								borderColor="gray.300"
-							/>
-
-							<Input
-								name="lastName"
-								type="text"
-								placeholder="Apellido"
-								ref={register({ required: true })}
-								borderColor="gray.300"
-							/>
+							<FormControl>
+								<Input
+									aria-label="nombre"
+									name="firstName"
+									type="text"
+									placeholder="Nombre"
+									ref={register({ required: true })}
+									borderColor="gray.300"
+								/>
+							</FormControl>
+							<FormControl>
+								<Input
+									aria-label="apellido"
+									name="lastName"
+									type="text"
+									placeholder="Apellido"
+									ref={register({ required: true })}
+									borderColor="gray.300"
+								/>
+							</FormControl>
 						</Stack>
 
 						{/* TODO: VALIDATE IF USERNAME IS TAKEN AND DISPLAY ERROR AT THE BOTTOM IF IT IS */}
-						<Input
-							name="username"
-							type="text"
-							placeholder="Nombre de usuario"
-							ref={register({ required: true })}
-							borderColor="gray.300"
-						/>
-
-						<Input
-							name="password"
-							type="password"
-							placeholder="Contraseña"
-							ref={register({ required: true, minLength: 4 })}
-							borderColor="gray.300"
-						/>
+						<FormControl>
+							<Input
+								aria-label="nombre de usuario"
+								name="username"
+								type="text"
+								placeholder="Nombre de usuario"
+								ref={register({ required: true })}
+								borderColor="gray.300"
+							/>
+						</FormControl>
+						<FormControl>
+							<Input
+								aria-label="contraseña"
+								name="password"
+								type="password"
+								placeholder="Contraseña"
+								ref={register({ required: true, minLength: 4 })}
+								borderColor="gray.300"
+							/>
+						</FormControl>
 
 						<Button
 							isDisabled={isInvalid}
 							isLoading={isLoading}
-							aria-label="ingresar"
+							aria-label="crear cuenta"
 							variantColor="blue"
 							type="submit"
 							my="1rem"
