@@ -2,51 +2,29 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { ThemeProvider, CSSReset } from '@chakra-ui/core';
 import Login from '../components/Auth/Login';
-import {
-	render,
-	screen,
-	wait,
-	waitFor,
-	fireEvent,
-	act,
-	waitForElement,
-	waitForElementToBeRemoved,
-	getAllByText,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import SignUp from '../components/Auth/SignUp';
+import ForgotPassword from '../components/Auth/ForgotPassword';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 
 import 'mutationobserver-shim';
 
 import useProtectedRoute from '../hooks/useProtectedRoute';
 
-import { FirebaseContext } from '../GlobalState/FirebaseContext';
 import { AuthContext } from '../GlobalState/AuthContext';
 
 import * as ROUTES from '../constants/routes';
 
+import { doSignInUserWithEmailAndPassword, doSignInWithFacebook, doPasswordReset } from '../firebase/firebase';
+
 global.MutationObserver = window.MutationObserver;
 
-/*
-
-On pressing "Ingresar", it triggers the function with the right data
-On pressing "Ingresar con Facebook" it triggers the right function
-
-
-Validate errors and edge cases
-
-*/
-
 jest.mock('../hooks/useProtectedRoute');
+jest.mock('../firebase/firebase');
 
 describe('Login', () => {
 	const promise = Promise.resolve();
-	const doSignInUserWithEmailAndPassword = jest.fn(() => promise);
 
 	beforeEach(() => {
-		const firebaseContext = {
-			doSignInUserWithEmailAndPassword,
-		};
-
 		const authContext = {
 			user: {},
 			isLoading: false,
@@ -55,14 +33,12 @@ describe('Login', () => {
 
 		render(
 			<MemoryRouter>
-				<FirebaseContext.Provider value={firebaseContext}>
-					<AuthContext.Provider value={authContext}>
-						<ThemeProvider>
-							<CSSReset />
-							<Login />
-						</ThemeProvider>
-					</AuthContext.Provider>
-				</FirebaseContext.Provider>
+				<AuthContext.Provider value={authContext}>
+					<ThemeProvider>
+						<CSSReset />
+						<Login />
+					</ThemeProvider>
+				</AuthContext.Provider>
 			</MemoryRouter>
 		);
 	});
@@ -76,14 +52,6 @@ describe('Login', () => {
 		expect(link).toHaveTextContent(/recuperar clave/i);
 	});
 
-	test('"Recuperar clave" link points to the correct page', async () => {
-		const link = screen.getByRole('link', { name: /recuperar/i });
-
-		expect(link).toHaveAttribute('href', ROUTES.FORGOT_PASSWORD);
-
-		userEvent.click(link);
-	});
-
 	test('"Regístrate" link renders with the right values', () => {
 		const link = screen.getByRole('link', { name: /regístrate/i });
 
@@ -91,12 +59,16 @@ describe('Login', () => {
 		expect(link).toHaveTextContent(/regístrate/i);
 	});
 
+	test('"Recuperar clave" link points to the correct page', async () => {
+		const link = screen.getByRole('link', { name: /recuperar/i });
+
+		expect(link).toHaveAttribute('href', ROUTES.FORGOT_PASSWORD);
+	});
+
 	test('"Regístrate" link points to the correct page', async () => {
 		const link = screen.getByRole('link', { name: /regístrate/i });
 
 		expect(link).toHaveAttribute('href', ROUTES.SINGUP);
-
-		userEvent.click(link);
 	});
 
 	test('email and password input render with the right values', () => {
@@ -151,7 +123,9 @@ describe('Login', () => {
 		expect(loginButton).not.toBeDisabled();
 	});
 
-	test('when submit with main button, loading state is shown and then removed', async () => {
+	test('when submit with main button, doSignInUserWithEmailAndPassword is called', async () => {
+		doSignInUserWithEmailAndPassword.mockReturnValue(promise);
+
 		const loginButton = screen.getByLabelText('ingresar');
 
 		const emailInput = screen.getByLabelText(/email/i);
@@ -163,7 +137,9 @@ describe('Login', () => {
 		fireEvent.input(emailInput, { target: { value: emailText } });
 		fireEvent.input(passwordInput, { target: { value: passText } });
 
-		userEvent.click(loginButton);
+		expect(doSignInUserWithEmailAndPassword).toHaveBeenCalledTimes(0);
+
+		fireEvent.click(loginButton);
 
 		await act(() => promise);
 
@@ -171,7 +147,46 @@ describe('Login', () => {
 		expect(doSignInUserWithEmailAndPassword).toHaveBeenCalledWith(emailText, passText);
 	});
 
-	// test('when submit with facebook button, loading state is shown and then removed', async () => {
+	test('when submit with facebook button, doSignInWithFacebook is called', async () => {
+		doSignInWithFacebook.mockReturnValue(promise);
+
+		const fbLoginButton = screen.getByLabelText('ingresar con facebook');
+
+		expect(doSignInWithFacebook).toHaveBeenCalledTimes(0);
+
+		fireEvent.click(fbLoginButton);
+
+		await act(() => promise);
+
+		expect(doSignInWithFacebook).toHaveBeenCalledTimes(1);
+	});
+
+	test('error message renders', async () => {
+		const errorMessages = {
+			'auth/user-not-found':
+				'El correo electrónico ingresado no está registrado. Comprueba el correo y vuelve a intentarlo.',
+		};
+
+		doSignInUserWithEmailAndPassword.mockReturnValue(Promise.reject({ code: 'auth/user-not-found' }));
+
+		const loginButton = screen.getByLabelText('ingresar');
+
+		const emailInput = screen.getByLabelText(/email/i);
+		const passwordInput = screen.getByLabelText(/contraseña/i);
+
+		const emailText = 'email@email.com';
+		const passText = 'password';
+
+		fireEvent.input(emailInput, { target: { value: emailText } });
+		fireEvent.input(passwordInput, { target: { value: passText } });
+
+		fireEvent.click(loginButton);
+
+		await act(() => promise);
+
+		expect(screen.getByText(errorMessages['auth/user-not-found'])).toBeInTheDocument();
+	});
+});
 
 	// 	const fbLoginButton = screen.getByLabelText('ingresar con facebook');
 
