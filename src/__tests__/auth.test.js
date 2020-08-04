@@ -272,15 +272,129 @@ describe('SignUp', () => {
 	});
 });
 
-	// 	fireEvent.click(fbLoginButton);
+describe('ForgotPassword', () => {
+	beforeEach(() => {
+		const authContext = {
+			user: {},
+			isLoading: false,
+			error: null,
+		};
 
-	// 	const loading = await screen.findAllByText(/loading/i);
+		render(
+			<MemoryRouter>
+				<AuthContext.Provider value={authContext}>
+					<ThemeProvider>
+						<CSSReset />
+						<ForgotPassword />
+					</ThemeProvider>
+				</AuthContext.Provider>
+			</MemoryRouter>
+		);
+	});
 
-	// 	expect(doSignInUserWithEmailAndPassword).toHaveBeenCalledTimes(1);
-	// 	expect(loading).toHaveLength(2);
+	useProtectedRoute.mockReturnValue({});
 
-	// 	screen.debug();
+	test('"Creat nueva cuenta" link renders with the right values', () => {
+		const link = screen.getByRole('link', { name: /crear nueva cuenta/i });
+		expect(link).toBeInTheDocument();
+	});
 
-	// 	await act(() => promise);
-	// });
+	test('"Volver a inicio de sesión" link renders with the right values', () => {
+		const link = screen.getByRole('link', { name: /volver a inicio de sesión/i });
+		expect(link).toBeInTheDocument();
+	});
+
+	test('"Crear nueva cuenta" link points to the correct page', async () => {
+		const link = screen.getByRole('link', { name: /crear nueva cuenta/i });
+
+		expect(link).toHaveAttribute('href', ROUTES.SINGUP);
+	});
+
+	test('"Volver a inicio de sesión" link points to the correct page', async () => {
+		const link = screen.getByRole('link', { name: /volver a inicio de sesión/i });
+
+		expect(link).toHaveAttribute('href', ROUTES.LOGIN);
+	});
+
+	test('email input render with the right values', () => {
+		const emailInput = screen.getByLabelText(/email/i);
+
+		expect(emailInput).toBeInTheDocument();
+
+		expect(emailInput).toHaveValue('');
+	});
+
+	test('email input updates when entering text', () => {
+		const emailInput = screen.getByLabelText(/email/i);
+
+		const emailText = 'email@email.com';
+
+		fireEvent.input(emailInput, { target: { value: emailText } });
+		expect(emailInput).toHaveValue(emailText);
+	});
+
+	test('"Recuperar cuenta" button render', () => {
+		const button = screen.getByLabelText(/recuperar cuenta/i);
+		expect(button).toBeInTheDocument();
+	});
+
+	test('Recuperar cuenta button is disabled when empty input and active when value in inputs', () => {
+		const button = screen.getByLabelText(/recuperar cuenta/i);
+
+		expect(button).toHaveAttribute('aria-disabled', 'true');
+		expect(button).toBeDisabled();
+
+		const emailInput = screen.getByLabelText(/email/i);
+
+		const emailText = 'email@email.com';
+
+		fireEvent.input(emailInput, { target: { value: emailText } });
+
+		expect(button).toHaveAttribute('aria-disabled', 'false');
+		expect(button).not.toBeDisabled();
+	});
+
+	test('when submit, doPasswordReset is called', async () => {
+		const promise = Promise.resolve();
+
+		doPasswordReset.mockReturnValue(promise);
+
+		const button = screen.getByLabelText(/recuperar cuenta/i);
+
+		const emailInput = screen.getByLabelText(/email/i);
+
+		const emailText = 'email@email.com';
+
+		fireEvent.input(emailInput, { target: { value: emailText } });
+
+		expect(doPasswordReset).toHaveBeenCalledTimes(0);
+
+		fireEvent.click(button);
+
+		await act(() => promise);
+
+		expect(doPasswordReset).toHaveBeenCalledTimes(1);
+		expect(doPasswordReset).toHaveBeenCalledWith(emailText);
+	});
+
+	test('error message renders', async () => {
+		const errorMessages = {
+			'auth/user-not-found': 'No existe una cuenta registrada con este correo electrónico.',
+		};
+
+		doPasswordReset.mockReturnValue(Promise.reject({ code: 'auth/user-not-found' }));
+
+		const button = screen.getByLabelText(/recuperar cuenta/i);
+
+		const emailInput = screen.getByLabelText(/email/i);
+
+		const emailText = 'email@email.com';
+
+		fireEvent.input(emailInput, { target: { value: emailText } });
+		fireEvent.click(button);
+
+		await act(() => Promise.resolve());
+
+		expect(screen.getByText(errorMessages['auth/user-not-found'])).toBeInTheDocument();
+	});
 });
