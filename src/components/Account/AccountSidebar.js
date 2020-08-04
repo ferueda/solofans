@@ -2,8 +2,8 @@ import React, { useContext } from 'react';
 import { Box, Divider, Stack, Text, PseudoBox } from '@chakra-ui/core';
 import { useHistory } from 'react-router-dom';
 import { BsPerson, BsGear, BsBoxArrowInLeft, BsCreditCard } from 'react-icons/bs';
+import { doSignOut } from '../../firebase/firebase';
 
-import { FirebaseContext } from '../../GlobalState/FirebaseContext';
 import { AuthContext } from '../../GlobalState/AuthContext';
 
 import * as ROUTES from '../../constants/routes';
@@ -18,11 +18,10 @@ const iconProps = {
 
 const AccountSidebar = () => {
 	const { user } = useContext(AuthContext);
-	const firebase = useContext(FirebaseContext);
 	const history = useHistory();
 
 	const handleLogOut = () => {
-		firebase.doSignOut().then(() => {
+		doSignOut().then(() => {
 			history.push(ROUTES.LOGIN);
 		});
 	};

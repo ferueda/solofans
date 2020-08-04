@@ -3,15 +3,12 @@ import { useForm } from 'react-hook-form';
 import { Box, Stack, Input, Button, Text, FormLabel, FormControl, Textarea } from '@chakra-ui/core';
 
 import { AuthContext } from '../../GlobalState/AuthContext';
-import { FirebaseContext } from '../../GlobalState/FirebaseContext';
-
 import useProtectedRoute from '../../hooks/useProtectedRoute';
 
 const EditProfileForm = () => {
 	const { register, handleSubmit, watch } = useForm();
 
 	const { user } = useContext(AuthContext);
-	const firebase = useContext(FirebaseContext);
 
 	useProtectedRoute();
 

@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Button } from '@chakra-ui/core';
 import { GrFacebookOption } from 'react-icons/gr';
-
-import { FirebaseContext } from '../../GlobalState/FirebaseContext';
+import { doSignInWithFacebook, db } from '../../firebase/firebase';
 
 const errorMessages = {
 	'auth/account-exists-with-different-credential':
@@ -10,19 +9,17 @@ const errorMessages = {
 };
 
 const FacebookLoginButton = ({ isLoading = false, setIsLoading, setError }) => {
-	const firebase = useContext(FirebaseContext);
-
 	const handleSignIn = async () => {
 		setIsLoading(true);
 		setError(null);
 
 		try {
-			const { user, additionalUserInfo } = await firebase.doSignInWithFacebook();
+			const { user, additionalUserInfo } = await doSignInWithFacebook();
 
 			if (additionalUserInfo.isNewUser) {
 				let username = user.displayName.toLowerCase().trim().replace(/\s/g, '');
 
-				const userisTaken = await firebase.db.collection('usernames').doc(username).get();
+				const userisTaken = await db.collection('usernames').doc(username).get();
 
 				if (userisTaken.exists) {
 					username = `${username}${Math.floor(Math.random() * 10000)}`;
@@ -32,7 +29,7 @@ const FacebookLoginButton = ({ isLoading = false, setIsLoading, setError }) => {
 					await user.updateProfile({
 						displayName: username,
 					}),
-					firebase.db.collection('users').doc(user.uid).set({
+					db.collection('users').doc(user.uid).set({
 						email: user.email,
 						username,
 						firstName: additionalUserInfo.profile.first_name,
@@ -40,7 +37,7 @@ const FacebookLoginButton = ({ isLoading = false, setIsLoading, setError }) => {
 						photoURL: user.photoURL,
 						roles: 'user', //TODO: make it an array of roles and modify the Firestore rules to accept them.
 					}),
-					firebase.db.collection('usernames').doc(username).set({
+					db.collection('usernames').doc(username).set({
 						uid: user.uid,
 					}),
 				]);

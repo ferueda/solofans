@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/core';
 
 import { AuthContext } from '../../GlobalState/AuthContext';
-import { FirebaseContext } from '../../GlobalState/FirebaseContext';
+import { auth, authProviders } from '../../firebase/firebase';
 
 const SIGN_IN_METHODS = [
 	{
@@ -126,13 +126,12 @@ const LoginManagement = () => {
 	const [modalIsOpen, setModalIsOpen] = useState(false);
 
 	const { user } = useContext(AuthContext);
-	const firebase = useContext(FirebaseContext);
 
 	const fetchSignInMethods = useCallback(() => {
 		setError(null);
 		setIsLoading(true);
 
-		return firebase.auth
+		return auth
 			.fetchSignInMethodsForEmail(user?.email)
 			.then(activeMethod => {
 				setActiveMethods(activeMethod);
@@ -143,7 +142,7 @@ const LoginManagement = () => {
 				setIsLoading(false);
 				setError(error);
 			});
-	}, [firebase, user]);
+	}, [user]);
 
 	useEffect(() => {
 		fetchSignInMethods();
@@ -153,8 +152,8 @@ const LoginManagement = () => {
 		setIsLoading(true);
 		setError(null);
 
-		firebase.auth.currentUser
-			.linkWithPopup(firebase[provider])
+		auth.currentUser
+			.linkWithPopup(authProviders[provider])
 			.then(({ user, additionalUserInfo }) => {
 				if (!user.photoURL) {
 					user.updateProfile({
@@ -173,7 +172,7 @@ const LoginManagement = () => {
 		setIsLoading(true);
 		setError(null);
 
-		firebase.auth.currentUser
+		auth.currentUser
 			.unlink(providerId)
 			.then(() => fetchSignInMethods())
 			.catch(error => {
@@ -186,9 +185,9 @@ const LoginManagement = () => {
 		setIsLoading(true);
 		setError(null);
 
-		const credential = firebase.emailAuthProvider.credential(user.email, password);
+		const credential = authProviders.emailAuthProvider.credential(user.email, password);
 
-		firebase.auth.currentUser
+		auth.currentUser
 			.linkWithCredential(credential)
 			.then(() => fetchSignInMethods())
 			.catch(error => {

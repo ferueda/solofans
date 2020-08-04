@@ -1,11 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
-import { Box, Stack, Link, Input, Button, Text } from '@chakra-ui/core';
+import { Box, Stack, Link, Input, Button, Text, FormControl } from '@chakra-ui/core';
 import { useForm } from 'react-hook-form';
 
 import * as ROUTES from '../../constants/routes';
-
-import { FirebaseContext } from '../../GlobalState/FirebaseContext';
+import { doSignInUserWithEmailAndPassword } from '../../firebase/firebase';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
 
 import LogoMain from '../shared/LogoMain';
@@ -50,7 +49,6 @@ const errorMessages = {
 const Login = () => {
 	const { register, handleSubmit, errors, watch } = useForm();
 
-	const firebase = useContext(FirebaseContext);
 	const history = useHistory();
 
 	const [isLoading, setIsLoading] = useState(false);
@@ -67,14 +65,14 @@ const Login = () => {
 		setIsLoading(true);
 		setError(null);
 
-		firebase
-			.doSignInUserWithEmailAndPassword(email, password)
+		doSignInUserWithEmailAndPassword(email, password)
 			.then(() => {
 				setIsLoading(false);
 				setError(false);
 				history.push(ROUTES.HOME);
 			})
 			.catch(error => {
+				console.log('error run');
 				setIsLoading(false);
 				setError({ ...error, message: errorMessages[error.code] });
 			});

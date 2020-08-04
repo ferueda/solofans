@@ -1,18 +1,16 @@
-import { useState, useEffect, useContext } from 'react';
-import { FirebaseContext } from '../GlobalState/FirebaseContext';
+import { useState, useEffect } from 'react';
+import { db } from '../firebase/firebase';
 
 const usePosts = () => {
 	const [posts, setPosts] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 
-	const firebase = useContext(FirebaseContext);
-
 	useEffect(() => {
 		setIsLoading(true);
 		setError(null);
 
-		const unsubscribe = firebase.db
+		const unsubscribe = db
 			.collection('posts')
 			.orderBy('createdAt', 'desc')
 			.onSnapshot(snapshot => {
@@ -30,7 +28,7 @@ const usePosts = () => {
 		return () => {
 			unsubscribe();
 		};
-	}, [firebase.db]);
+	}, []);
 
 	return {
 		posts,

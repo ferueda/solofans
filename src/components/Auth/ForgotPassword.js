@@ -1,11 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Stack, Link, Input, Button, Text } from '@chakra-ui/core';
 import { useForm } from 'react-hook-form';
 
 import * as ROUTES from '../../constants/routes';
-
-import { FirebaseContext } from '../../GlobalState/FirebaseContext';
+import { doPasswordReset } from '../../firebase/firebase';
 
 import useProtectedRoute from '../../hooks/useProtectedRoute';
 
@@ -73,8 +72,6 @@ const ForgotPassword = () => {
 
 	const [emailSent, setEmailSent] = useState(false);
 
-	const firebase = useContext(FirebaseContext);
-
 	useProtectedRoute(isLoading);
 
 	const watchEmail = watch('email');
@@ -85,8 +82,7 @@ const ForgotPassword = () => {
 
 		const { email } = data;
 
-		firebase
-			.doPasswordReset(email)
+		doPasswordReset(email)
 			.then(() => {
 				setIsLoading(false);
 				setError(null);

@@ -15,9 +15,8 @@ import {
 } from '@chakra-ui/core';
 
 import * as ROUTES from '../../constants/routes';
-
+import { authProviders, db } from '../../firebase/firebase';
 import { AuthContext } from '../../GlobalState/AuthContext';
-import { FirebaseContext } from '../../GlobalState/FirebaseContext';
 
 const errorMessages = {
 	'auth/wrong-password': 'Contraseña incorrecta o cuenta sin contraseña registrada.',
@@ -29,7 +28,6 @@ const DeleteUser = () => {
 	const [modalIsOpen, setModalIsOpen] = useState(false);
 
 	const { user } = useContext(AuthContext);
-	const firebase = useContext(FirebaseContext);
 	const history = useHistory();
 
 	const { register, handleSubmit, watch } = useForm();
@@ -40,15 +38,15 @@ const DeleteUser = () => {
 		setIsLoading(true);
 		setError(null);
 
-		const credential = firebase.emailAuthProvider.credential(user.email, data.password);
+		const credential = authProviders.emailAuthProvider.credential(user.email, data.password);
 
 		user
 			.reauthenticateWithCredential(credential)
 			.then(({ user }) => user.delete())
 			.then(() => {
 				return Promise.all([
-					firebase.db.collection('usernames').doc(user.displayName).delete(),
-					firebase.db.collection('users').doc(user.uid).delete(),
+					db.collection('usernames').doc(user.displayName).delete(),
+					db.collection('users').doc(user.uid).delete(),
 				]);
 			})
 			.then(() => {

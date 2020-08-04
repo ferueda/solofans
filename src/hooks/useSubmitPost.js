@@ -2,14 +2,15 @@ import { useEffect, useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-import { FirebaseContext } from '../GlobalState/FirebaseContext';
+import { auth, storage, db, firebase } from '../firebase/firebase';
+
 import { AuthContext } from '../GlobalState/AuthContext';
 
 import * as ROUTES from '../constants/routes';
 
 const useSubmitPost = () => {
-	const firebase = useContext(FirebaseContext);
 	const { user } = useContext(AuthContext);
+
 	const history = useHistory();
 
 	const [postObject, setPostObject] = useState(null);
@@ -28,7 +29,7 @@ const useSubmitPost = () => {
 
 		(async () => {
 			try {
-				const userTokenId = await firebase.auth.currentUser.getIdToken();
+				const userTokenId = await auth.currentUser.getIdToken();
 
 				const imageUploadPromises = [];
 
@@ -47,7 +48,7 @@ const useSubmitPost = () => {
 				const uploadedImages = await Promise.all(imageUploadPromises);
 				const uploadedImageNames = uploadedImages.map(image => image.data.name);
 
-				const storageRef = firebase.storage.ref();
+				const storageRef = storage.ref();
 				const imagesRef = uploadedImageNames.map(img => storageRef.child(img));
 
 				const imageDonwloadLinkPromises = imagesRef.map(imageRef => imageRef.getDownloadURL());
@@ -58,7 +59,7 @@ const useSubmitPost = () => {
 					photos: [...imagesUrl],
 				};
 
-				const followersRef = firebase.db.collection('followers');
+				const followersRef = db.collection('followers');
 				const followersDocRef = followersRef.doc(user.uid);
 
 				const followersDoc = await followersDocRef.get();
@@ -66,15 +67,15 @@ const useSubmitPost = () => {
 
 				if (recentPosts.length >= 5) {
 					await followersDocRef.update({
-						recentPosts: firebase.app.firestore.FieldValue.arrayRemove(recentPosts[recentPosts.length - 1]),
+						recentPosts: firebase.firestore.FieldValue.arrayRemove(recentPosts[recentPosts.length - 1]),
 					});
 				}
 
-				const postUploadPromise = firebase.db.collection('posts').add(newPostObject);
+				const postUploadPromise = db.collection('posts').add(newPostObject);
 
 				const followersDocUpdatePromise = followersDocRef.update({
 					lastPost: newPostObject.createdAt,
-					recentPosts: firebase.app.firestore.FieldValue.arrayUnion(newPostObject),
+					recentPosts: firebase.firestore.FieldValue.arrayUnion(newPostObject),
 				});
 
 				await Promise.all([postUploadPromise, followersDocUpdatePromise]);
@@ -84,6 +85,7 @@ const useSubmitPost = () => {
 
 				history.push(ROUTES.HOME);
 			} catch (error) {
+				console.log(error);
 				setError(axios.isCancel(error) ? null : error);
 				setIsLoading(false);
 			}

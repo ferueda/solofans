@@ -1,24 +1,20 @@
-import { useState, useEffect, useContext } from 'react';
-
-import { FirebaseContext } from '../GlobalState/FirebaseContext';
+import { useState, useEffect } from 'react';
+import { db, auth } from '../firebase/firebase';
 
 const useAuth = () => {
 	const [user, setUser] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(null);
 
-	const firebase = useContext(FirebaseContext);
-
 	useEffect(() => {
 		setIsLoading(true);
 		setError(null);
 
-		const unsubscribe = firebase.auth.onAuthStateChanged(returnedUser => {
+		const unsubscribe = auth.onAuthStateChanged(returnedUser => {
 			if (returnedUser) {
 				const authUser = returnedUser;
 
-				firebase.db
-					.collection('users')
+				db.collection('users')
 					.doc(authUser.uid)
 					.get()
 					.then(res => {
@@ -48,7 +44,7 @@ const useAuth = () => {
 		return () => {
 			unsubscribe();
 		};
-	}, [firebase]);
+	}, []);
 
 	return {
 		user,

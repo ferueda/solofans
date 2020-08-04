@@ -1,12 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Box, Stack, Link, Input, Button, Text } from '@chakra-ui/core';
 
 import * as ROUTES from '../../constants/routes';
 import { capitalizeWord } from '../../utils/helpers';
-
-import { FirebaseContext } from '../../GlobalState/FirebaseContext';
+import { db, doCreateUserWithEmailAndPassword, doSendEmailVerification } from '../../firebase/firebase';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
 
 import LogoMain from '../shared/LogoMain';
@@ -51,7 +50,6 @@ const errorMessages = {
 const SignUp = () => {
 	const { register, handleSubmit, watch } = useForm();
 
-	const firebase = useContext(FirebaseContext);
 	const history = useHistory();
 
 	const [isLoading, setIsLoading] = useState(false);
@@ -75,20 +73,20 @@ const SignUp = () => {
 		firstName = capitalizeWord(firstName);
 		lastName = capitalizeWord(lastName);
 
-		const userisTaken = await firebase.db.collection('usernames').doc(username).get();
+		const userisTaken = await db.collection('usernames').doc(username).get();
 
 		if (userisTaken.exists) {
 			setIsLoading(false);
 			setError({ code: 'auth/username-already-in-use', message: errorMessages['auth/username-already-in-use'] });
 		} else {
 			try {
-				const { user } = await firebase.doCreateUserWithEmailAndPassword(email, password);
+				const { user } = await doCreateUserWithEmailAndPassword(email, password);
 
 				await Promise.all([
 					user.updateProfile({
 						displayName: username,
 					}),
-					firebase.db.collection('users').doc(user.uid).set({
+					db.collection('users').doc(user.uid).set({
 						email: user.email,
 						username,
 						firstName,
@@ -96,16 +94,16 @@ const SignUp = () => {
 						photoURL: user.photoURL,
 						roles: 'user', //TODO: make it an array of roles and modify the Firestore rules to accept them.
 					}),
-					firebase.db.collection('usernames').doc(username).set({
+					db.collection('usernames').doc(username).set({
 						uid: user.uid,
 					}),
-					firebase.db.collection('followers').doc(user.uid).set({
+					db.collection('followers').doc(user.uid).set({
 						totalFollowers: 0,
 						lastPost: null,
 						recentPosts: [],
 						followers: [],
 					}),
-					firebase.doSendEmailVerification(),
+					doSendEmailVerification(),
 				]);
 
 				setIsLoading(false);
