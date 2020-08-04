@@ -89,43 +89,49 @@ const Login = () => {
 
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Stack>
-						<Input
-							name="email"
-							type="email"
-							placeholder="Correo electrónico"
-							ref={register({
-								required: {
-									value: true,
-									message: 'Debes ingresar tu correo electrónico',
-								},
-								pattern: {
-									value: emailValidationRegex,
-									message: 'Debes ingresar un correo electrónico válido',
-								},
-							})}
-							mt="1rem"
-							borderColor="gray.300"
-						/>
+						<FormControl>
+							<Input
+								aria-label="email"
+								name="email"
+								type="email"
+								placeholder="Correo electrónico"
+								ref={register({
+									required: {
+										value: true,
+										message: 'Debes ingresar tu correo electrónico',
+									},
+									pattern: {
+										value: emailValidationRegex,
+										message: 'Debes ingresar un correo electrónico válido',
+									},
+								})}
+								mt="1rem"
+								borderColor="gray.300"
+							/>
 
-						{errors.email && (
-							<Text fontSize="sm" color="red.500">
-								{errors.email.message}
-							</Text>
-						)}
+							{errors.email && (
+								<Text fontSize="sm" color="red.500">
+									{errors.email.message}
+								</Text>
+							)}
+						</FormControl>
 
-						<Input
-							name="password"
-							type="password"
-							ref={register({ required: true })}
-							placeholder="Contraseña"
-							borderColor="gray.300"
-						/>
+						<FormControl>
+							<Input
+								aria-label="contraseña"
+								name="password"
+								type="password"
+								ref={register({ required: true })}
+								placeholder="Contraseña"
+								borderColor="gray.300"
+							/>
 
-						{errors.password && (
-							<Text fontSize="sm" color="red.500">
-								Debes ingresar tu contraseña
-							</Text>
-						)}
+							{errors.password && (
+								<Text fontSize="sm" color="red.500">
+									Debes ingresar tu contraseña
+								</Text>
+							)}
+						</FormControl>
 
 						<Button
 							isDisabled={isInvalid}
