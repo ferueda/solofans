@@ -16,7 +16,7 @@ import {
 
 import * as ROUTES from '../../constants/routes';
 import { authProviders, db } from '../../firebase/firebase';
-import { AuthContext } from '../../GlobalState/AuthContext';
+import useUser from '../../hooks/useUser';
 
 const errorMessages = {
 	'auth/wrong-password': 'Contraseña incorrecta o cuenta sin contraseña registrada.',
@@ -27,7 +27,7 @@ const DeleteUser = () => {
 	const [error, setError] = useState(null);
 	const [modalIsOpen, setModalIsOpen] = useState(false);
 
-	const { user } = useContext(AuthContext);
+	const user = useUser();
 	const history = useHistory();
 
 	const { register, handleSubmit, watch } = useForm();

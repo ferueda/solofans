@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Stack, PseudoBox, Textarea, Text } from '@chakra-ui/core';
+import { Box, Stack, PseudoBox, Textarea } from '@chakra-ui/core';
 import { BsImages } from 'react-icons/bs';
 import { FaLockOpen, FaLock } from 'react-icons/fa';
 

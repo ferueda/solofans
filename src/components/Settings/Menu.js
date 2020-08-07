@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Divider, Text, Button, Stack, PseudoBox } from '@chakra-ui/core';
+import { Box, Stack, PseudoBox } from '@chakra-ui/core';
 import { BsPerson, BsAt, BsShieldLock } from 'react-icons/bs';
 
 const iconProps = {

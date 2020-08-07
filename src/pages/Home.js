@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Skeleton } from '@chakra-ui/core';
+import { Box } from '@chakra-ui/core';
 
 import usePosts from '../hooks/usePosts';
 import useProtectedRoute from '../hooks/useProtectedRoute';
@@ -16,7 +16,6 @@ const Home = () => {
 
 	return (
 		<Box mb="4rem" d="flex" flexDir="column" alignItems="center" bg="#fafafa">
-			<Nav />
 			<LogoHeader />
 
 			{posts.map(post => (
@@ -24,6 +23,7 @@ const Home = () => {
 			))}
 
 			{isLoading && <PostSkeleton />}
+			<Nav />
 		</Box>
 	);
 };

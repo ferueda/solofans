@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Box, Stack, Input, Button, Text, FormLabel, FormControl, Textarea } from '@chakra-ui/core';
+import { Box, Stack, Input, Button, FormLabel, FormControl, Textarea } from '@chakra-ui/core';
 
-import { AuthContext } from '../../GlobalState/AuthContext';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
+import useUser from '../../hooks/useUser';
 
 const EditProfileForm = () => {
 	const { register, handleSubmit, watch } = useForm();
 
-	const { user } = useContext(AuthContext);
+	const user = useUser();
 
 	useProtectedRoute();
 

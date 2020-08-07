@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import {
 	Button,
@@ -13,7 +13,7 @@ import {
 	Text,
 } from '@chakra-ui/core';
 
-import { AuthContext } from '../../GlobalState/AuthContext';
+import useUser from '../../hooks/useUser';
 import { auth, authProviders } from '../../firebase/firebase';
 
 const SIGN_IN_METHODS = [
@@ -125,7 +125,7 @@ const LoginManagement = () => {
 	const [error, setError] = useState(null);
 	const [modalIsOpen, setModalIsOpen] = useState(false);
 
-	const { user } = useContext(AuthContext);
+	const user = useUser();
 
 	const fetchSignInMethods = useCallback(() => {
 		setError(null);

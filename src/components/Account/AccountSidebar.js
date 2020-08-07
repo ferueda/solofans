@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Box, Divider, Stack, Text, PseudoBox } from '@chakra-ui/core';
 import { useHistory } from 'react-router-dom';
 import { BsPerson, BsGear, BsBoxArrowInLeft, BsCreditCard } from 'react-icons/bs';
 import { doSignOut } from '../../firebase/firebase';
 
-import { AuthContext } from '../../GlobalState/AuthContext';
+import useUser from '../../hooks/useUser';
 
 import * as ROUTES from '../../constants/routes';
 
@@ -17,7 +17,7 @@ const iconProps = {
 };
 
 const AccountSidebar = () => {
-	const { user } = useContext(AuthContext);
+	const user = useUser();
 	const history = useHistory();
 
 	const handleLogOut = () => {

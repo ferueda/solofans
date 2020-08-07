@@ -72,7 +72,6 @@ const Login = () => {
 				history.push(ROUTES.HOME);
 			})
 			.catch(error => {
-				console.log('error run');
 				setIsLoading(false);
 				setError({ ...error, message: errorMessages[error.code] });
 			});

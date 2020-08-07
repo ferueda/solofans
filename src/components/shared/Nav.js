@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { Box, Link } from '@chakra-ui/core';
-import { BsPlusSquare, BsHouse, BsSearch, BsChatDots, BsPeopleCircle } from 'react-icons/bs';
+import { BsPlusSquare, BsHouse, BsSearch, BsPeopleCircle } from 'react-icons/bs';
 
 import * as ROUTES from '../../constants/routes';
 

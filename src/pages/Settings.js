@@ -1,9 +1,8 @@
-import React, { useContext, useState } from 'react';
-import { Box, Divider, Text, Button, Stack } from '@chakra-ui/core';
+import React, { useState } from 'react';
+import { Box, Divider, Text, Button } from '@chakra-ui/core';
 
 import useProtectedRoute from '../hooks/useProtectedRoute';
-
-import { AuthContext } from '../GlobalState/AuthContext';
+import useUser from '../hooks/useUser';
 
 import Nav from '../components/shared/Nav';
 import SectionHeader from '../components/shared/SectionHeader';
@@ -18,7 +17,7 @@ const Settings = () => {
 
 	const [active, setActive] = useState('profile');
 
-	const { user } = useContext(AuthContext);
+	const user = useUser();
 
 	console.log(user);
 

@@ -1,10 +1,9 @@
-import React, { useReducer, useContext, useRef } from 'react';
+import React, { useReducer, useRef } from 'react';
 import { Box, Divider, Text, Grid } from '@chakra-ui/core';
-
-import { AuthContext } from '../GlobalState/AuthContext';
 
 import useProtectedRoute from '../hooks/useProtectedRoute';
 import useSubmitPost from '../hooks/useSubmitPost';
+import useUser from '../hooks/useUser';
 
 import { newPostReducer } from '../GlobalState/reducers';
 
@@ -48,7 +47,7 @@ const initialState = {
 
 const NewPost = () => {
 	useProtectedRoute();
-	const { user } = useContext(AuthContext);
+	const user = useUser();
 
 	const { setPostObject, isLoading } = useSubmitPost();
 
