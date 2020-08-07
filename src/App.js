@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import Buscar from './pages/Buscar';
 import NewPost from './pages/NewPost';
 import Settings from './pages/Settings';
+import PageNotFound from './pages/PageNotFound';
 
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
@@ -35,6 +36,8 @@ const App = () => {
 					<Route path={ROUTES.LOGIN} component={Login} />
 					<Route path={ROUTES.SINGUP} component={SignUp} />
 					<Route path={ROUTES.FORGOT_PASSWORD} component={ForgotPassword} />
+
+					<Route path="*" component={PageNotFound} />
 				</Switch>
 			</ThemeProvider>
 		</GlobalState>
